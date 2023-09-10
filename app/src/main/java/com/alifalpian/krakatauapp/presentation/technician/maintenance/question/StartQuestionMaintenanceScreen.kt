@@ -1,42 +1,55 @@
-package com.alifalpian.krakatauapp.presentation.login
+package com.alifalpian.krakatauapp.presentation.technician.maintenance.question
 
-import androidx.compose.foundation.Image
+import androidx.compose.foundation.ExperimentalFoundationApi
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
-import androidx.compose.foundation.layout.width
 import androidx.compose.material3.ExperimentalMaterial3Api
+import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Surface
+import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.res.painterResource
+import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
-import com.alifalpian.krakatauapp.R
+import androidx.compose.ui.unit.em
+import com.alifalpian.krakatauapp.presentation.destinations.MaintenanceFormTechnicianScreenDestination
 import com.alifalpian.krakatauapp.ui.components.KrakatauButton
-import com.alifalpian.krakatauapp.ui.components.KrakatauOutlinedTextField
+import com.alifalpian.krakatauapp.ui.components.KrakatauTopAppBar
+import com.alifalpian.krakatauapp.ui.components.KrakatauTopAppBarType
 import com.alifalpian.krakatauapp.ui.theme.PreventiveMaintenanceTheme
 import com.ramcosta.composedestinations.annotation.Destination
 import com.ramcosta.composedestinations.navigation.DestinationsNavigator
 import com.ramcosta.composedestinations.navigation.EmptyDestinationsNavigator
 
+@ExperimentalFoundationApi
 @Destination
 @ExperimentalMaterial3Api
 @Composable
-fun LoginScreen(
+fun StartQuestionMaintenanceScreen(
     modifier: Modifier = Modifier,
     navigator: DestinationsNavigator = EmptyDestinationsNavigator
 ) {
-
-    val navigateToHomeScreen: () -> Unit = {
+    val onNavigationIconClicked: () -> Unit = {
+        navigator.navigateUp()
     }
-
+    val onStartMaintenanceButtonClicked: () -> Unit = {
+        navigator.navigate(MaintenanceFormTechnicianScreenDestination())
+    }
     Scaffold(
+        topBar = {
+            KrakatauTopAppBar(
+                title = "Maintenance",
+                type = KrakatauTopAppBarType.Detail,
+                onNavigationIconClicked = onNavigationIconClicked
+            )
+        },
         modifier = modifier
     ) { paddingValues ->
         Column(
@@ -46,43 +59,29 @@ fun LoginScreen(
             verticalArrangement = Arrangement.Center,
             horizontalAlignment = Alignment.CenterHorizontally
         ) {
-            Image(
-                painter = painterResource(id = R.drawable.logo),
-                contentDescription = "logo",
-                modifier = modifier
-                    .width(width = 147.dp)
-                    .height(height = 36.dp)
+            Text(
+                text = "Apakah anda ingin melakukan Maintenance?",
+                textAlign = TextAlign.Center,
+                lineHeight = 1.27.em,
+                style = MaterialTheme.typography.titleLarge
             )
-            Spacer(modifier = Modifier.height(40.dp))
-            KrakatauOutlinedTextField(
-                value = "",
-                onValueChanged = {},
-                label = "Email",
-                modifier = Modifier.padding(horizontal = 70.dp)
-            )
-            Spacer(modifier = Modifier.height(16.dp))
-            KrakatauOutlinedTextField(
-                value = "",
-                onValueChanged = {},
-                label = "Password",
-                modifier = Modifier.padding(horizontal = 70.dp)
-            )
-            Spacer(modifier = Modifier.height(40.dp))
+            Spacer(modifier = Modifier.height(28.dp))
             KrakatauButton(
-                title = "Login",
-                onClicked = navigateToHomeScreen
+                title = "Mulai",
+                onClicked = onStartMaintenanceButtonClicked
             )
         }
     }
 }
 
+@ExperimentalFoundationApi
 @ExperimentalMaterial3Api
 @Preview
 @Composable
-fun PreviewLoginScreen() {
+fun PreviewStartQuestionMaintenanceScreen() {
     PreventiveMaintenanceTheme {
         Surface {
-            LoginScreen()
+            StartQuestionMaintenanceScreen()
         }
     }
 }

@@ -13,9 +13,7 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
-import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
-import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
@@ -40,12 +38,14 @@ enum class MaintenanceTechnicianItemType {
 fun MaintenanceTechnicianItem(
     modifier: Modifier = Modifier,
     equipment: MaintenanceEquipment,
-    type: MaintenanceTechnicianItemType = MaintenanceTechnicianItemType.AllEquipment
+    type: MaintenanceTechnicianItemType = MaintenanceTechnicianItemType.AllEquipment,
+    onClicked: (MaintenanceEquipment) -> Unit = {}
 ) {
     Row(
         modifier = modifier
             .fillMaxWidth()
             .clip(shape = RoundedCornerShape(10.dp))
+            .clickable { onClicked(equipment) }
             .background(color = Color(0xffe9e9e9))
             .padding(vertical = 8.dp, horizontal = 12.dp)
     ) {
@@ -97,16 +97,7 @@ fun MaintenanceTechnicianItem(
                 letterSpacing = 0.1.sp,
                 textAlign = TextAlign.End
             )
-            if (type == MaintenanceTechnicianItemType.AllEquipment) {
-                Spacer(modifier = Modifier.height(8.dp))
-                KrakatauSmallButton(
-                    text = "Request",
-                    onClicked = {}
-                )
-            }
-            if (type != MaintenanceTechnicianItemType.AllEquipment) {
-                Spacer(modifier = Modifier.height(24.dp))
-            }
+            Spacer(modifier = Modifier.height(24.dp))
         }
     }
 }

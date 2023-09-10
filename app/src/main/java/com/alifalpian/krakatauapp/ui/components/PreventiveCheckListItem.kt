@@ -4,6 +4,7 @@ import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
 import androidx.compose.material3.Checkbox
 import androidx.compose.material3.Surface
@@ -11,6 +12,7 @@ import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
@@ -21,18 +23,25 @@ import com.alifalpian.krakatauapp.ui.theme.PreventiveMaintenanceTheme
 fun PreventiveCheckListItem(
     modifier: Modifier = Modifier,
     item: PreventiveCheckList,
-    onCheckedChange: (Boolean) -> Unit
+    onCheckedChange: (Boolean) -> Unit,
+    enabled: Boolean = true
 ) {
     Row(
         modifier = modifier.fillMaxWidth(),
         verticalAlignment = Alignment.CenterVertically,
     ) {
-        Checkbox(checked = item.isChecked, onCheckedChange = onCheckedChange)
-        Spacer(modifier = Modifier.width(4.dp))
+        Checkbox(
+            checked = item.isChecked,
+            onCheckedChange = onCheckedChange,
+            modifier = Modifier.size(16.dp),
+            enabled = enabled
+        )
+        Spacer(modifier = Modifier.width(16.dp))
         Text(
             text = item.text,
             fontSize = 12.sp,
-            modifier = Modifier.fillMaxWidth()
+            fontWeight = FontWeight.Medium,
+            lineHeight = 16.sp
         )
     }
 }
