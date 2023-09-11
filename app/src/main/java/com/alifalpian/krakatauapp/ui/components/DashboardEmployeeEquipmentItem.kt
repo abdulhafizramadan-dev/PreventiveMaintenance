@@ -1,6 +1,7 @@
 package com.alifalpian.krakatauapp.ui.components
 
 import androidx.compose.foundation.background
+import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.PaddingValues
@@ -28,14 +29,16 @@ import com.alifalpian.krakatauapp.ui.theme.PreventiveMaintenanceTheme
 @Composable
 fun DashboardEmployeeEquipmentItem(
     modifier: Modifier = Modifier,
-    equipment: EmployeeDashboardEquipment
+    equipment: EmployeeDashboardEquipment,
+    onClicked: (EmployeeDashboardEquipment) -> Unit = {}
 ) {
     Column(
         modifier = modifier
             .fillMaxWidth()
             .clip(RoundedCornerShape(size = 16.dp))
+            .clickable { onClicked(equipment) }
             .background(Color(0xFFE9E9E9))
-            .padding(vertical = 16.dp, horizontal = 32.dp),
+            .padding(all = 16.dp),
     ) {
         Text(
             text = equipment.order,
@@ -68,7 +71,7 @@ fun DashboardEmployeeEquipmentItem(
 fun PreviewDashboardEmployeeEquipmentItem() {
     PreventiveMaintenanceTheme {
         Surface {
-            val dummyTechnicianDashboardEquipments = (1..10).map {
+            val dummyEmployeeDashboardEquipments = (1..10).map {
                 EmployeeDashboardEquipment(
                     id = it.toString(),
                     order = "2210003221",
@@ -80,7 +83,7 @@ fun PreviewDashboardEmployeeEquipmentItem() {
                 contentPadding = PaddingValues(all = 32.dp),
                 verticalArrangement = Arrangement.spacedBy(10.dp)
             ) {
-                items(items = dummyTechnicianDashboardEquipments, key = { it.id }) {
+                items(items = dummyEmployeeDashboardEquipments, key = { it.id }) {
                     DashboardEmployeeEquipmentItem(equipment = it)
                 }
             }

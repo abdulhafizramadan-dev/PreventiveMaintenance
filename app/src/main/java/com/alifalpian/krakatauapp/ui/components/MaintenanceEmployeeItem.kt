@@ -1,6 +1,7 @@
 package com.alifalpian.krakatauapp.ui.components
 
 import androidx.compose.foundation.background
+import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.PaddingValues
@@ -13,7 +14,6 @@ import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.shape.RoundedCornerShape
-import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
@@ -30,20 +30,17 @@ import androidx.compose.ui.unit.sp
 import com.alifalpian.krakatauapp.domain.MaintenanceEquipment
 import com.alifalpian.krakatauapp.ui.theme.PreventiveMaintenanceTheme
 
-enum class MaintenanceEmployeeItemType {
-    MaintenanceRequests, MaintenanceApproved
-}
-
 @Composable
 fun MaintenanceEmployeeItem(
     modifier: Modifier = Modifier,
     equipment: MaintenanceEquipment,
-    type: MaintenanceEmployeeItemType = MaintenanceEmployeeItemType.MaintenanceRequests
+    onClicked: (MaintenanceEquipment) -> Unit = {}
 ) {
     Row(
         modifier = modifier
             .fillMaxWidth()
             .clip(shape = RoundedCornerShape(10.dp))
+            .clickable { onClicked(equipment) }
             .background(color = Color(0xffe9e9e9))
             .padding(vertical = 8.dp, horizontal = 12.dp)
     ) {
@@ -102,25 +99,7 @@ fun MaintenanceEmployeeItem(
                 letterSpacing = 0.1.sp,
                 textAlign = TextAlign.End
             )
-            if (type == MaintenanceEmployeeItemType.MaintenanceRequests) {
-                Spacer(modifier = Modifier.height(8.dp))
-                Row {
-                    KrakatauSmallButton(
-                        text = "Reject",
-                        onClicked = {},
-                        containerColor = Color.White,
-                        contentColor = MaterialTheme.colorScheme.primary
-                    )
-                    Spacer(modifier = Modifier.width(4.dp))
-                    KrakatauSmallButton(
-                        text = "Accept",
-                        onClicked = {}
-                    )
-                }
-            }
-            if (type != MaintenanceEmployeeItemType.MaintenanceRequests) {
-                Spacer(modifier = Modifier.height(24.dp))
-            }
+            Spacer(modifier = Modifier.height(24.dp))
         }
     }
 }
@@ -147,8 +126,7 @@ fun PreviewMaintenanceEmployeeItem() {
                 verticalArrangement = Arrangement.spacedBy(10.dp)
             ) {
                 items(items = dummyMaintenanceEquipments, key = { it.id }) {
-                    val type = if (it.id.toInt() % 2 == 0) MaintenanceEmployeeItemType.MaintenanceRequests else MaintenanceEmployeeItemType.MaintenanceApproved
-                    MaintenanceEmployeeItem(equipment = it, type = type)
+                    MaintenanceEmployeeItem(equipment = it)
                 }
             }
         }
