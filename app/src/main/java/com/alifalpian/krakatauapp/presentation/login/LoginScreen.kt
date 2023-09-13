@@ -1,5 +1,6 @@
 package com.alifalpian.krakatauapp.presentation.login
 
+import androidx.compose.foundation.ExperimentalFoundationApi
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
@@ -18,13 +19,17 @@ import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import com.alifalpian.krakatauapp.R
-import com.alifalpian.krakatauapp.ui.components.KrakatauButton
-import com.alifalpian.krakatauapp.ui.components.KrakatauOutlinedTextField
+import com.alifalpian.krakatauapp.presentation.destinations.HomeEmployeeScreenDestination
+import com.alifalpian.krakatauapp.ui.components.krakatau.KrakatauButton
+import com.alifalpian.krakatauapp.ui.components.krakatau.KrakatauOutlinedTextField
 import com.alifalpian.krakatauapp.ui.theme.PreventiveMaintenanceTheme
 import com.ramcosta.composedestinations.annotation.Destination
+import com.ramcosta.composedestinations.annotation.RootNavGraph
 import com.ramcosta.composedestinations.navigation.DestinationsNavigator
 import com.ramcosta.composedestinations.navigation.EmptyDestinationsNavigator
 
+@ExperimentalFoundationApi
+@RootNavGraph(start = true)
 @Destination
 @ExperimentalMaterial3Api
 @Composable
@@ -34,6 +39,8 @@ fun LoginScreen(
 ) {
 
     val navigateToHomeScreen: () -> Unit = {
+//        navigator.navigate(HomeTechnicianScreenDestination())
+        navigator.navigate(HomeEmployeeScreenDestination())
     }
 
     Scaffold(
@@ -76,6 +83,7 @@ fun LoginScreen(
     }
 }
 
+@ExperimentalFoundationApi
 @ExperimentalMaterial3Api
 @Preview
 @Composable

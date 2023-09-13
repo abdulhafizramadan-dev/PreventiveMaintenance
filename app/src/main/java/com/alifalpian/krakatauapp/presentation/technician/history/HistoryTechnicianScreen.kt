@@ -15,8 +15,8 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import com.alifalpian.krakatauapp.domain.MaintenanceEquipment
 import com.alifalpian.krakatauapp.ui.components.HistoryDateFilter
-import com.alifalpian.krakatauapp.ui.components.KrakatauTopAppBar
-import com.alifalpian.krakatauapp.ui.components.MaintenanceTechnicianItem
+import com.alifalpian.krakatauapp.ui.components.krakatau.KrakatauTopAppBar
+import com.alifalpian.krakatauapp.ui.components.maintenance.MaintenanceTechnicianItem
 import com.alifalpian.krakatauapp.ui.theme.PreventiveMaintenanceTheme
 import com.ramcosta.composedestinations.annotation.Destination
 import com.ramcosta.composedestinations.navigation.DestinationsNavigator

@@ -1,4 +1,4 @@
-package com.alifalpian.krakatauapp.ui.components
+package com.alifalpian.krakatauapp.ui.components.dashboard
 
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
@@ -23,14 +23,14 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.em
 import androidx.compose.ui.unit.sp
-import com.alifalpian.krakatauapp.domain.EmployeeDashboardEquipment
+import com.alifalpian.krakatauapp.domain.TechnicianDashboardEquipment
 import com.alifalpian.krakatauapp.ui.theme.PreventiveMaintenanceTheme
 
 @Composable
-fun DashboardEmployeeEquipmentItem(
+fun DashboardTechnicianEquipmentItem(
     modifier: Modifier = Modifier,
-    equipment: EmployeeDashboardEquipment,
-    onClicked: (EmployeeDashboardEquipment) -> Unit = {}
+    equipment: TechnicianDashboardEquipment,
+    onClicked: (TechnicianDashboardEquipment) -> Unit = {}
 ) {
     Column(
         modifier = modifier
@@ -38,53 +38,48 @@ fun DashboardEmployeeEquipmentItem(
             .clip(RoundedCornerShape(size = 16.dp))
             .clickable { onClicked(equipment) }
             .background(Color(0xFFE9E9E9))
-            .padding(all = 16.dp),
+            .padding(vertical = 16.dp, horizontal = 32.dp),
     ) {
         Text(
-            text = equipment.order,
-            lineHeight = 1.67.em,
-            fontSize = 12.sp,
-            fontWeight = FontWeight.Medium,
-            letterSpacing = 0.1.sp
+            text = equipment.name,
+            lineHeight = 2.em,
+            fontSize = 14.sp,
+            fontWeight = FontWeight.Bold
         )
         Spacer(modifier = Modifier.height(4.dp))
         Text(
-            text = equipment.equipmentName,
-            lineHeight = 1.25.em,
-            fontSize = 12.sp,
-            fontWeight = FontWeight.Medium,
-            letterSpacing = 0.1.sp
+            text = "Jumlah : ${equipment.count}",
+            lineHeight = 2.33.em,
+            fontSize = 12.sp
         )
         Spacer(modifier = Modifier.height(4.dp))
         Text(
-            text = equipment.location,
-            lineHeight = 1.25.em,
-            fontSize = 12.sp,
-            fontWeight = FontWeight.Medium,
-            letterSpacing = 0.1.sp
+            text = "Total Maintenance : ${equipment.maintenanceCount}",
+            lineHeight = 2.33.em,
+            fontSize = 12.sp
         )
     }
 }
 
 @Preview
 @Composable
-fun PreviewDashboardEmployeeEquipmentItem() {
+fun PreviewDashboardTechnicianEquipmentItem() {
     PreventiveMaintenanceTheme {
         Surface {
-            val dummyEmployeeDashboardEquipments = (1..10).map {
-                EmployeeDashboardEquipment(
+            val dummyTechnicianDashboardEquipments = (1..10).map {
+                TechnicianDashboardEquipment(
                     id = it.toString(),
-                    order = "2210003221",
-                    location = "Ruang Staff SEKPER (WTP)",
-                    equipmentName = "PRINTER INKJET EPSON L3250 SIMK"
+                    name = "Komputer",
+                    count = 654,
+                    maintenanceCount = 354
                 )
             }
             LazyColumn(
                 contentPadding = PaddingValues(all = 32.dp),
                 verticalArrangement = Arrangement.spacedBy(10.dp)
             ) {
-                items(items = dummyEmployeeDashboardEquipments, key = { it.id }) {
-                    DashboardEmployeeEquipmentItem(equipment = it)
+                items(items = dummyTechnicianDashboardEquipments, key = { it.id }) {
+                    DashboardTechnicianEquipmentItem(equipment = it)
                 }
             }
         }

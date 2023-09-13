@@ -1,4 +1,4 @@
-package com.alifalpian.krakatauapp.ui.components
+package com.alifalpian.krakatauapp.ui.components.maintenance
 
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer

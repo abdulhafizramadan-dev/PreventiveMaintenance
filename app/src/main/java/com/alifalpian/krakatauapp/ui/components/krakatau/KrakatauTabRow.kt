@@ -1,4 +1,4 @@
-package com.alifalpian.krakatauapp.ui.components
+package com.alifalpian.krakatauapp.ui.components.krakatau
 
 import androidx.compose.foundation.ExperimentalFoundationApi
 import androidx.compose.foundation.layout.Box
@@ -46,7 +46,7 @@ fun KrakatauTabRow(
         indicator = { tabPositions ->
             TabRowDefaults.Indicator(
                 Modifier.tabIndicatorOffset(tabPositions[pagerState.currentPage]),
-                height = 2.dp,
+                height = 4.dp,
                 color = Color.White
             )
         }

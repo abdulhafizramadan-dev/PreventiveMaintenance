@@ -1,4 +1,4 @@
-package com.alifalpian.krakatauapp.ui.components
+package com.alifalpian.krakatauapp.ui.components.krakatau
 
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable

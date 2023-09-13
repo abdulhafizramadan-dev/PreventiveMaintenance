@@ -1,4 +1,4 @@
-package com.alifalpian.krakatauapp.presentation.maintenance
+package com.alifalpian.krakatauapp.ui.components.maintenance
 
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
@@ -27,15 +27,19 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.alifalpian.krakatauapp.R
 import com.alifalpian.krakatauapp.domain.MaintenanceTools
-import com.alifalpian.krakatauapp.ui.components.KrakatauOutlinedTextFieldWithLabel
+import com.alifalpian.krakatauapp.ui.components.krakatau.KrakatauOutlinedTextFieldWithLabel
 import com.alifalpian.krakatauapp.ui.theme.PreventiveMaintenanceTheme
+
+enum class MaintenanceToolsFormType {
+    Technician, Employee
+}
 
 @ExperimentalMaterial3Api
 @Composable
-fun MaintenanceSafetyUseForm(
+fun MaintenanceToolsForm(
     modifier: Modifier = Modifier,
     tools: List<MaintenanceTools>,
-    type: MaintenanceScreenType = MaintenanceScreenType.Technician,
+    type: MaintenanceToolsFormType = MaintenanceToolsFormType.Technician,
     onAddButtonClicked: () -> Unit = {}
 ) {
     Column(
@@ -44,7 +48,7 @@ fun MaintenanceSafetyUseForm(
             .background(color = Color(0xFFE3E3E3))
             .then(modifier)
     ) {
-        MaintenanceSafetyUseFormHeader(
+        MaintenanceToolsFormHeader(
             type = type,
             onAddButtonClicked = onAddButtonClicked
         )
@@ -76,9 +80,9 @@ fun MaintenanceSafetyUseForm(
 }
 
 @Composable
-fun MaintenanceSafetyUseFormHeader(
+fun MaintenanceToolsFormHeader(
     modifier: Modifier = Modifier,
-    type: MaintenanceScreenType = MaintenanceScreenType.Technician,
+    type: MaintenanceToolsFormType = MaintenanceToolsFormType.Technician,
     onAddButtonClicked: () -> Unit = {}
 ) {
     Row(
@@ -87,11 +91,11 @@ fun MaintenanceSafetyUseFormHeader(
         verticalAlignment = Alignment.CenterVertically
     ) {
         Text(
-            text = "PENGGUNAAN SAFETY",
+            text = "TOOLS/ALAT",
             fontSize = 14.sp,
             fontWeight = FontWeight.Bold
         )
-        if (type == MaintenanceScreenType.Technician) {
+        if (type == MaintenanceToolsFormType.Technician) {
             IconButton(
                 onClick = onAddButtonClicked,
                 modifier = Modifier.offset(x = 16.dp)
@@ -109,7 +113,7 @@ fun MaintenanceSafetyUseFormHeader(
 @ExperimentalMaterial3Api
 @Preview
 @Composable
-fun PreviewMaintenanceSafetyUseForm() {
+fun PreviewMaintenanceToolsForm() {
     PreventiveMaintenanceTheme {
         Surface {
             val tools = (1..3).map {
@@ -120,7 +124,7 @@ fun PreviewMaintenanceSafetyUseForm() {
                     unitOfMeasurement = 1
                 )
             }
-            MaintenanceSafetyUseForm(
+            MaintenanceToolsForm(
                 tools = tools,
                 modifier = Modifier.padding(16.dp)
             )

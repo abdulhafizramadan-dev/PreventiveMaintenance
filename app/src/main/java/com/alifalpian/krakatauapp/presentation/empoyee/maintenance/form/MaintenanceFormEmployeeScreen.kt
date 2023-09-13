@@ -26,16 +26,17 @@ import androidx.compose.ui.unit.dp
 import com.alifalpian.krakatauapp.domain.MaintenanceEquipment
 import com.alifalpian.krakatauapp.domain.MaintenanceTools
 import com.alifalpian.krakatauapp.domain.PreventiveCheckList
-import com.alifalpian.krakatauapp.presentation.maintenance.MaintenanceContent
-import com.alifalpian.krakatauapp.presentation.maintenance.MaintenanceContentType
-import com.alifalpian.krakatauapp.presentation.maintenance.MaintenanceHeader
-import com.alifalpian.krakatauapp.presentation.maintenance.MaintenanceSafetyUseForm
-import com.alifalpian.krakatauapp.presentation.maintenance.MaintenanceScreenType
-import com.alifalpian.krakatauapp.presentation.maintenance.MaintenanceToolsForm
-import com.alifalpian.krakatauapp.ui.components.KrakatauButton
-import com.alifalpian.krakatauapp.ui.components.KrakatauTabRow
-import com.alifalpian.krakatauapp.ui.components.KrakatauTopAppBar
-import com.alifalpian.krakatauapp.ui.components.KrakatauTopAppBarType
+import com.alifalpian.krakatauapp.ui.components.krakatau.KrakatauButton
+import com.alifalpian.krakatauapp.ui.components.krakatau.KrakatauTabRow
+import com.alifalpian.krakatauapp.ui.components.krakatau.KrakatauTopAppBar
+import com.alifalpian.krakatauapp.ui.components.krakatau.KrakatauTopAppBarType
+import com.alifalpian.krakatauapp.ui.components.maintenance.MaintenanceContent
+import com.alifalpian.krakatauapp.ui.components.maintenance.MaintenanceContentType
+import com.alifalpian.krakatauapp.ui.components.maintenance.MaintenanceHeader
+import com.alifalpian.krakatauapp.ui.components.maintenance.MaintenanceSafetyUseForm
+import com.alifalpian.krakatauapp.ui.components.maintenance.MaintenanceSafetyUseFormType
+import com.alifalpian.krakatauapp.ui.components.maintenance.MaintenanceToolsForm
+import com.alifalpian.krakatauapp.ui.components.maintenance.MaintenanceToolsFormType
 import com.alifalpian.krakatauapp.ui.theme.PreventiveMaintenanceTheme
 import com.ramcosta.composedestinations.annotation.Destination
 import com.ramcosta.composedestinations.navigation.DestinationsNavigator
@@ -142,7 +143,7 @@ fun MaintenanceFormEmployeeScreen(
                                 MaintenanceToolsForm(
                                     tools = tools,
                                     modifier = Modifier.padding(32.dp),
-                                    type = MaintenanceScreenType.Technician
+                                    type = MaintenanceToolsFormType.Employee
                                 )
                             }
 
@@ -150,7 +151,7 @@ fun MaintenanceFormEmployeeScreen(
                                 MaintenanceSafetyUseForm(
                                     tools = tools,
                                     modifier = Modifier.padding(32.dp),
-                                    type = MaintenanceScreenType.Technician
+                                    type = MaintenanceSafetyUseFormType.Employee
                                 )
                             }
                         }

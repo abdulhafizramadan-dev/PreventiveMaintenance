@@ -20,9 +20,9 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.em
 import com.alifalpian.krakatauapp.presentation.destinations.MaintenanceFormTechnicianScreenDestination
-import com.alifalpian.krakatauapp.ui.components.KrakatauButton
-import com.alifalpian.krakatauapp.ui.components.KrakatauTopAppBar
-import com.alifalpian.krakatauapp.ui.components.KrakatauTopAppBarType
+import com.alifalpian.krakatauapp.ui.components.krakatau.KrakatauButton
+import com.alifalpian.krakatauapp.ui.components.krakatau.KrakatauTopAppBar
+import com.alifalpian.krakatauapp.ui.components.krakatau.KrakatauTopAppBarType
 import com.alifalpian.krakatauapp.ui.theme.PreventiveMaintenanceTheme
 import com.ramcosta.composedestinations.annotation.Destination
 import com.ramcosta.composedestinations.navigation.DestinationsNavigator

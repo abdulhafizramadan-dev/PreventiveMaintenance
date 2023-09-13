@@ -15,7 +15,7 @@ import com.alifalpian.krakatauapp.domain.BottomNavigationItem
 import com.alifalpian.krakatauapp.presentation.technician.dashboard.DashboardTechnicianScreen
 import com.alifalpian.krakatauapp.presentation.technician.history.HistoryTechnicianScreen
 import com.alifalpian.krakatauapp.presentation.technician.maintenance.list.ListMaintenanceTechnicianScreen
-import com.alifalpian.krakatauapp.ui.components.KrakatauNavigationBar
+import com.alifalpian.krakatauapp.ui.components.krakatau.KrakatauNavigationBar
 import com.alifalpian.krakatauapp.ui.navigation.KrakatauAppScreens
 import com.ramcosta.composedestinations.annotation.Destination
 import com.ramcosta.composedestinations.navigation.DestinationsNavigator

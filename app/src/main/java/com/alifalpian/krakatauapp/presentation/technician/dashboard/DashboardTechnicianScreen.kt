@@ -15,8 +15,8 @@ import androidx.compose.ui.unit.dp
 import com.alifalpian.krakatauapp.domain.TechnicianDashboardEquipment
 import com.alifalpian.krakatauapp.domain.User
 import com.alifalpian.krakatauapp.presentation.destinations.LoginScreenDestination
-import com.alifalpian.krakatauapp.ui.components.DashboardTechnicianEquipmentItem
-import com.alifalpian.krakatauapp.ui.components.KrakatauDashboardTopAppBar
+import com.alifalpian.krakatauapp.ui.components.dashboard.DashboardTechnicianEquipmentItem
+import com.alifalpian.krakatauapp.ui.components.krakatau.KrakatauDashboardTopAppBar
 import com.alifalpian.krakatauapp.ui.theme.PreventiveMaintenanceTheme
 import com.ramcosta.composedestinations.annotation.Destination
 import com.ramcosta.composedestinations.navigation.DestinationsNavigator

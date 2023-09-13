@@ -21,8 +21,8 @@ import androidx.compose.ui.unit.dp
 import com.alifalpian.krakatauapp.domain.MaintenanceEquipment
 import com.alifalpian.krakatauapp.presentation.destinations.MaintenanceFormEmployeeScreenDestination
 import com.alifalpian.krakatauapp.presentation.empoyee.maintenance.form.MaintenanceFormEmployeeScreenStatus
-import com.alifalpian.krakatauapp.ui.components.KrakatauTopAppBarWithTabRow
-import com.alifalpian.krakatauapp.ui.components.MaintenanceEmployeeItem
+import com.alifalpian.krakatauapp.ui.components.krakatau.KrakatauTopAppBarWithTabRow
+import com.alifalpian.krakatauapp.ui.components.maintenance.MaintenanceEmployeeItem
 import com.alifalpian.krakatauapp.ui.theme.PreventiveMaintenanceTheme
 import com.ramcosta.composedestinations.annotation.Destination
 import com.ramcosta.composedestinations.navigation.DestinationsNavigator

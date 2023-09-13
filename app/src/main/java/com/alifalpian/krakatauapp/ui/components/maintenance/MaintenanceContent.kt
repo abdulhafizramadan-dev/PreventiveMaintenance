@@ -1,4 +1,4 @@
-package com.alifalpian.krakatauapp.presentation.maintenance
+package com.alifalpian.krakatauapp.ui.components.maintenance
 
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Column
@@ -23,8 +23,7 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.alifalpian.krakatauapp.domain.MaintenanceEquipment
 import com.alifalpian.krakatauapp.domain.PreventiveCheckList
-import com.alifalpian.krakatauapp.ui.components.KrakatauOutlinedTextField
-import com.alifalpian.krakatauapp.ui.components.PreventiveCheckListItem
+import com.alifalpian.krakatauapp.ui.components.krakatau.KrakatauOutlinedTextField
 import com.alifalpian.krakatauapp.ui.theme.PreventiveMaintenanceTheme
 
 enum class MaintenanceContentType {
@@ -99,7 +98,7 @@ fun MaintenanceContent(
             fontWeight = FontWeight.Medium
         )
         if (type == MaintenanceContentType.Technician) {
-            KrakatauOutlinedTextField(value = "", onValueChanged = {})
+            KrakatauOutlinedTextField(value = "", onValueChanged = {}, trailingLabel = "Jam")
         }
     }
 }

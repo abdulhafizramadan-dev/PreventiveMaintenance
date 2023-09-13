@@ -21,8 +21,8 @@ import com.alifalpian.krakatauapp.domain.MaintenanceEquipment
 import com.alifalpian.krakatauapp.presentation.destinations.MaintenanceFormTechnicianScreenDestination
 import com.alifalpian.krakatauapp.presentation.destinations.StartQuestionMaintenanceScreenDestination
 import com.alifalpian.krakatauapp.presentation.technician.maintenance.form.MaintenanceFormTechnicianScreenStatus
-import com.alifalpian.krakatauapp.ui.components.KrakatauTopAppBarWithTabRow
-import com.alifalpian.krakatauapp.ui.components.MaintenanceTechnicianItem
+import com.alifalpian.krakatauapp.ui.components.krakatau.KrakatauTopAppBarWithTabRow
+import com.alifalpian.krakatauapp.ui.components.maintenance.MaintenanceTechnicianItem
 import com.alifalpian.krakatauapp.ui.theme.PreventiveMaintenanceTheme
 import com.ramcosta.composedestinations.annotation.Destination
 import com.ramcosta.composedestinations.navigation.DestinationsNavigator
