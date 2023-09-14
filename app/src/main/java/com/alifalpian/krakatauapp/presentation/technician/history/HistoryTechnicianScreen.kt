@@ -18,6 +18,11 @@ import com.alifalpian.krakatauapp.ui.components.HistoryDateFilter
 import com.alifalpian.krakatauapp.ui.components.krakatau.KrakatauTopAppBar
 import com.alifalpian.krakatauapp.ui.components.maintenance.MaintenanceTechnicianItem
 import com.alifalpian.krakatauapp.ui.theme.PreventiveMaintenanceTheme
+import com.maxkeppeker.sheets.core.models.base.rememberUseCaseState
+import com.maxkeppeler.sheets.calendar.CalendarDialog
+import com.maxkeppeler.sheets.calendar.models.CalendarConfig
+import com.maxkeppeler.sheets.calendar.models.CalendarSelection
+import com.maxkeppeler.sheets.calendar.models.CalendarStyle
 import com.ramcosta.composedestinations.annotation.Destination
 import com.ramcosta.composedestinations.navigation.DestinationsNavigator
 import com.ramcosta.composedestinations.navigation.EmptyDestinationsNavigator
@@ -45,6 +50,22 @@ fun HistoryTechnicianScreen(
         )
     }
 
+    val calendarDialogUseCase = rememberUseCaseState()
+
+    val showCalendar: () -> Unit = { calendarDialogUseCase.show() }
+
+    CalendarDialog(
+        state = calendarDialogUseCase,
+        config = CalendarConfig(
+            yearSelection = true,
+            monthSelection = true,
+            style = CalendarStyle.MONTH, 
+        ),
+        selection = CalendarSelection.Period { startDate, endDate ->  
+
+        }
+    )
+
     Scaffold(
         topBar = {
             KrakatauTopAppBar(
@@ -59,7 +80,7 @@ fun HistoryTechnicianScreen(
             verticalArrangement = Arrangement.spacedBy(12.dp)
         ) {
             stickyHeader {
-                HistoryDateFilter(date = LocalDate.now())
+                HistoryDateFilter(date = LocalDate.now(), onFilterIconClicked = showCalendar)
             }
             items(items = dummyMaintenanceEquipments, key = { it.id }) {
                 MaintenanceTechnicianItem(equipment = it)

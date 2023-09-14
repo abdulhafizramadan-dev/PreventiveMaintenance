@@ -10,6 +10,7 @@ import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.offset
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
+import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.material3.Divider
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Icon
@@ -22,11 +23,12 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.font.FontWeight
+import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.alifalpian.krakatauapp.R
-import com.alifalpian.krakatauapp.domain.MaintenanceTools
+import com.alifalpian.krakatauapp.domain.SafetyMaintenance
 import com.alifalpian.krakatauapp.ui.components.krakatau.KrakatauOutlinedTextFieldWithLabel
 import com.alifalpian.krakatauapp.ui.theme.PreventiveMaintenanceTheme
 
@@ -38,10 +40,29 @@ enum class MaintenanceSafetyUseFormType {
 @Composable
 fun MaintenanceSafetyUseForm(
     modifier: Modifier = Modifier,
-    tools: List<MaintenanceTools>,
+    tools: List<SafetyMaintenance>,
     type: MaintenanceSafetyUseFormType = MaintenanceSafetyUseFormType.Technician,
-    onAddButtonClicked: () -> Unit = {}
+    onAddButtonClicked: () -> Unit = {},
+    onMaintenanceFormChange: (Int, SafetyMaintenance) -> Unit = {_, _ -> }
 ) {
+    val onDescriptionChanged: (Int, String) -> Unit = { index, description ->
+        val maintenanceTools = tools[index].copy(
+            description = description
+        )
+        onMaintenanceFormChange(index, maintenanceTools)
+    }
+    val onQuantityChanged: (Int, Int) -> Unit = { index, quantity ->
+        val maintenanceTools = tools[index].copy(
+            quantity = quantity
+        )
+        onMaintenanceFormChange(index, maintenanceTools)
+    }
+    val onUoMChanged: (Int, Int) -> Unit = { index, unitOfMeasurement ->
+        val maintenanceTools = tools[index].copy(
+            unitOfMeasurement = unitOfMeasurement
+        )
+        onMaintenanceFormChange(index, maintenanceTools)
+    }
     Column(
         modifier = Modifier
             .fillMaxWidth()
@@ -56,19 +77,27 @@ fun MaintenanceSafetyUseForm(
             Spacer(modifier = Modifier.height(14.dp))
             KrakatauOutlinedTextFieldWithLabel(
                 value = tool.description,
-                onValueChanged = {},
+                onValueChanged = { onDescriptionChanged(index, it) },
                 label = "Description"
             )
             Spacer(modifier = Modifier.height(10.dp))
             KrakatauOutlinedTextFieldWithLabel(
                 value = tool.quantity.toString(),
-                onValueChanged = {},
+                onValueChanged = {
+                    val number = if (it.isNotEmpty()) it.toInt() else 0
+                    onQuantityChanged(index, number)
+                },
+                keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Number),
                 label = "Quantity"
             )
             Spacer(modifier = Modifier.height(10.dp))
             KrakatauOutlinedTextFieldWithLabel(
                 value = tool.unitOfMeasurement.toString(),
-                onValueChanged = {},
+                onValueChanged = {
+                    val number = if (it.isNotEmpty()) it.toInt() else 0
+                    onUoMChanged(index, number)
+                },
+                keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Number),
                 label = "Unit of Measurement"
             )
             if (index != tools.lastIndex) {
@@ -117,7 +146,7 @@ fun PreviewMaintenanceSafetyUseForm() {
     PreventiveMaintenanceTheme {
         Surface {
             val tools = (1..3).map {
-                MaintenanceTools(
+                SafetyMaintenance(
                     id = it.toString(),
                     description = "Obeng",
                     quantity = 1,

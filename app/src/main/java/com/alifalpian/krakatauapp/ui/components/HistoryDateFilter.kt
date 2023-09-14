@@ -28,7 +28,8 @@ import java.util.Locale
 @Composable
 fun HistoryDateFilter(
     modifier: Modifier = Modifier,
-    date: LocalDate
+    date: LocalDate,
+    onFilterIconClicked: () -> Unit = {}
 ) {
     val month = date.month.name.lowercase().replaceFirstChar {
         if (it.isLowerCase()) it.titlecase(
@@ -61,7 +62,7 @@ fun HistoryDateFilter(
                     letterSpacing = 0.1.sp
                 )
             }
-            IconButton(onClick = { /*TODO*/ }) {
+            IconButton(onClick = onFilterIconClicked) {
                 Icon(
                     painter = painterResource(id = R.drawable.ic_outline_calendar_month_24),
                     contentDescription = "Pick date"

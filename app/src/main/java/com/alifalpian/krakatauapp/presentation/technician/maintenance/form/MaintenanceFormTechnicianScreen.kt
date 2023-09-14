@@ -13,6 +13,8 @@ import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Surface
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.collectAsState
+import androidx.compose.runtime.getValue
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.ui.Alignment
@@ -20,9 +22,9 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
-import com.alifalpian.krakatauapp.domain.MaintenanceEquipment
+import androidx.hilt.navigation.compose.hiltViewModel
 import com.alifalpian.krakatauapp.domain.MaintenanceTools
-import com.alifalpian.krakatauapp.domain.PreventiveCheckList
+import com.alifalpian.krakatauapp.domain.SafetyMaintenance
 import com.alifalpian.krakatauapp.ui.components.krakatau.KrakatauButton
 import com.alifalpian.krakatauapp.ui.components.krakatau.KrakatauTabRow
 import com.alifalpian.krakatauapp.ui.components.krakatau.KrakatauTopAppBar
@@ -50,32 +52,14 @@ enum class MaintenanceFormTechnicianScreenStatus {
 fun MaintenanceFormTechnicianScreen(
     modifier: Modifier = Modifier,
     status: MaintenanceFormTechnicianScreenStatus = MaintenanceFormTechnicianScreenStatus.Unfinished,
-    navigator: DestinationsNavigator = EmptyDestinationsNavigator
+    navigator: DestinationsNavigator = EmptyDestinationsNavigator,
+    viewModel: MaintenanceFormTechnicianViewModel = hiltViewModel()
 ) {
-    val equipment = MaintenanceEquipment(
-        id = "user123",
-        order = "2210043175",
-        date = "09/12/2023",
-        interval = "4 MON",
-        execution = "PG IT",
-        location = "Ruang Staff SEKPER (WTP)",
-        equipmentName = "LAPTOP DELL LATITUDE 3420 SKP4",
-        technicianName = "Hasan Maulana"
-    )
-    val preventiveCheckLists = (1..10).map {
-        PreventiveCheckList(
-            id = it.toString(),
-            text = "Periksa komponen komputer pastikan tidak ada kerusakan"
-        )
-    }
-    val tools = (1..3).map {
-        MaintenanceTools(
-            id = it.toString(),
-            description = "Obeng",
-            quantity = 1,
-            unitOfMeasurement = 1
-        )
-    }
+    val maintenanceFormTechnicianUiState by viewModel.maintenanceFormTechnicianUiState.collectAsState()
+    val equipment = maintenanceFormTechnicianUiState.equipment
+    val preventiveCheckLists = maintenanceFormTechnicianUiState.preventiveCheckList
+    val toolsMaintenanceForm = maintenanceFormTechnicianUiState.toolsMaintenanceForm
+    val safetyMaintenanceForm = maintenanceFormTechnicianUiState.safetyMaintenanceForm
 
     val tabPages = listOf(
         "Tools/Alat", "Penggunaan Safety"
@@ -91,6 +75,22 @@ fun MaintenanceFormTechnicianScreen(
 
     val onNavigationIconClicked: () -> Unit = {
         navigator.navigateUp()
+    }
+
+    val onAddToolsMaintenanceFormClicked: () -> Unit = {
+        viewModel.addToolsMaintenanceForm()
+    }
+
+    val onAddSafetyMaintenanceForm: () -> Unit = {
+        viewModel.addSafetyMaintenanceTools()
+    }
+
+    val onToolsMaintenanceFormChanged: (Int, MaintenanceTools) -> Unit = { index, maintenanceTools ->
+        viewModel.updateToolsMaintenanceForm(index = index, maintenanceTools = maintenanceTools)
+    }
+
+    val onSafetyMaintenanceFormChanged: (Int, SafetyMaintenance) -> Unit = { index, tools ->
+        viewModel.updateSafetyMaintenanceForm(index = index, safetyTools = tools)
     }
 
     Scaffold(
@@ -113,12 +113,14 @@ fun MaintenanceFormTechnicianScreen(
                 modifier = Modifier.weight(1f)
             ) {
                 item {
+                    if (equipment == null) return@item
                     MaintenanceHeader(
                         equipment = equipment,
                         modifier = Modifier.padding(32.dp)
                     )
                 }
                 item {
+                    if (equipment == null) return@item
                     MaintenanceContent(
                         equipment = equipment,
                         preventiveCheckLists = preventiveCheckLists,
@@ -138,17 +140,21 @@ fun MaintenanceFormTechnicianScreen(
                         when (position) {
                             0 -> {
                                 MaintenanceToolsForm(
-                                    tools = tools,
+                                    tools = toolsMaintenanceForm,
                                     modifier = Modifier.padding(32.dp),
-                                    type = MaintenanceToolsFormType.Technician
+                                    type = MaintenanceToolsFormType.Technician,
+                                    onAddButtonClicked = onAddToolsMaintenanceFormClicked,
+                                    onMaintenanceFormChange = onToolsMaintenanceFormChanged
                                 )
                             }
 
                             1 -> {
                                 MaintenanceSafetyUseForm(
-                                    tools = tools,
+                                    tools = safetyMaintenanceForm,
                                     modifier = Modifier.padding(32.dp),
-                                    type = MaintenanceSafetyUseFormType.Technician
+                                    type = MaintenanceSafetyUseFormType.Technician,
+                                    onAddButtonClicked = onAddSafetyMaintenanceForm,
+                                    onMaintenanceFormChange = onSafetyMaintenanceFormChanged
                                 )
                             }
                         }

@@ -143,13 +143,14 @@ fun MaintenanceFormEmployeeScreen(
                                 MaintenanceToolsForm(
                                     tools = tools,
                                     modifier = Modifier.padding(32.dp),
-                                    type = MaintenanceToolsFormType.Employee
+                                    type = MaintenanceToolsFormType.Employee,
+                                    onAddButtonClicked = {}
                                 )
                             }
 
                             1 -> {
                                 MaintenanceSafetyUseForm(
-                                    tools = tools,
+                                    tools = emptyList(),
                                     modifier = Modifier.padding(32.dp),
                                     type = MaintenanceSafetyUseFormType.Employee
                                 )
