@@ -1,9 +1,9 @@
 package com.alifalpian.krakatauapp.presentation.technician.maintenance.form
 
-import com.alifalpian.krakatauapp.domain.MaintenanceEquipment
-import com.alifalpian.krakatauapp.domain.MaintenanceTools
-import com.alifalpian.krakatauapp.domain.PreventiveCheckList
-import com.alifalpian.krakatauapp.domain.SafetyMaintenance
+import com.alifalpian.krakatauapp.domain.model.MaintenanceEquipment
+import com.alifalpian.krakatauapp.domain.model.MaintenanceTools
+import com.alifalpian.krakatauapp.domain.model.PreventiveCheckList
+import com.alifalpian.krakatauapp.domain.model.SafetyMaintenance
 
 data class MaintenanceFormTechnicianUiState(
     val equipment: MaintenanceEquipment? = null,

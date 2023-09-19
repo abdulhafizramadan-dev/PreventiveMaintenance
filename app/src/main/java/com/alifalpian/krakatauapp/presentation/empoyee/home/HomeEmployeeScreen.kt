@@ -13,7 +13,7 @@ import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
 import com.alifalpian.krakatauapp.R
-import com.alifalpian.krakatauapp.domain.BottomNavigationItem
+import com.alifalpian.krakatauapp.domain.model.BottomNavigationItem
 import com.alifalpian.krakatauapp.presentation.empoyee.dashboard.DashboardEmployeeScreen
 import com.alifalpian.krakatauapp.presentation.empoyee.maintenance.list.ListMaintenanceEmployeeScreen
 import com.alifalpian.krakatauapp.ui.components.krakatau.KrakatauNavigationBar

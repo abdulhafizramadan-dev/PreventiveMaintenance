@@ -33,7 +33,7 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.em
 import androidx.compose.ui.unit.sp
 import com.alifalpian.krakatauapp.R
-import com.alifalpian.krakatauapp.domain.User
+import com.alifalpian.krakatauapp.domain.model.User
 import com.alifalpian.krakatauapp.ui.theme.PreventiveMaintenanceTheme
 
 @Composable

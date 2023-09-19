@@ -23,9 +23,9 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
-import com.alifalpian.krakatauapp.domain.MaintenanceEquipment
-import com.alifalpian.krakatauapp.domain.MaintenanceTools
-import com.alifalpian.krakatauapp.domain.PreventiveCheckList
+import com.alifalpian.krakatauapp.domain.model.MaintenanceEquipment
+import com.alifalpian.krakatauapp.domain.model.MaintenanceTools
+import com.alifalpian.krakatauapp.domain.model.PreventiveCheckList
 import com.alifalpian.krakatauapp.ui.components.krakatau.KrakatauButton
 import com.alifalpian.krakatauapp.ui.components.krakatau.KrakatauTabRow
 import com.alifalpian.krakatauapp.ui.components.krakatau.KrakatauTopAppBar

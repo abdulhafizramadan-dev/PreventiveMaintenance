@@ -1,8 +1,8 @@
-package com.alifalpian.krakatauapp.domain
+package com.alifalpian.krakatauapp.domain.model
 
 import com.alifalpian.krakatauapp.util.emptyString
 
-data class SafetyMaintenance(
+data class MaintenanceTools(
     val id: String = emptyString(),
     val description: String = emptyString(),
     val quantity: Int = 0,

@@ -1,5 +1,6 @@
 package com.alifalpian.krakatauapp.presentation.login
 
+import android.util.Log
 import androidx.compose.foundation.ExperimentalFoundationApi
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.layout.Arrangement
@@ -13,8 +14,12 @@ import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Surface
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.painterResource
@@ -22,15 +27,26 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
 import com.alifalpian.krakatauapp.R
+import com.alifalpian.krakatauapp.domain.model.Resource
+import com.alifalpian.krakatauapp.domain.model.User
+import com.alifalpian.krakatauapp.domain.model.UserType
+import com.alifalpian.krakatauapp.presentation.destinations.HomeEmployeeScreenDestination
 import com.alifalpian.krakatauapp.presentation.destinations.HomeTechnicianScreenDestination
 import com.alifalpian.krakatauapp.ui.components.krakatau.KrakatauButton
 import com.alifalpian.krakatauapp.ui.components.krakatau.KrakatauOutlinedTextField
 import com.alifalpian.krakatauapp.ui.components.krakatau.KrakatauOutlinedTextFieldType
 import com.alifalpian.krakatauapp.ui.theme.PreventiveMaintenanceTheme
+import com.maxkeppeker.sheets.core.models.base.SelectionButton
+import com.maxkeppeker.sheets.core.models.base.rememberUseCaseState
+import com.maxkeppeler.sheets.info.InfoDialog
+import com.maxkeppeler.sheets.info.models.InfoBody
+import com.maxkeppeler.sheets.info.models.InfoSelection
 import com.ramcosta.composedestinations.annotation.Destination
 import com.ramcosta.composedestinations.annotation.RootNavGraph
 import com.ramcosta.composedestinations.navigation.DestinationsNavigator
 import com.ramcosta.composedestinations.navigation.EmptyDestinationsNavigator
+
+private const val TAG = "LoginScreen"
 
 @ExperimentalFoundationApi
 @RootNavGraph(start = true)
@@ -44,12 +60,74 @@ fun LoginScreen(
 ) {
 
     val loginUiState by loginViewModel.loginUiState.collectAsState()
+    val email = loginUiState.email
+    val password = loginUiState.password
+    val loginResult = loginUiState.loginResult
+    val loggedUser = loginUiState.loggedUser
+    val loadingState = loginUiState.loadingState
     val loginButtonEnabled by loginViewModel.loginButtonEnabled.collectAsState(initial = false)
 
-    val navigateToHomeScreen: () -> Unit = {
-        navigator.navigate(HomeTechnicianScreenDestination())
-//        navigator.navigate(HomeEmployeeScreenDestination())
+    val infoDialogUseCase = rememberUseCaseState()
+
+    var messageDialog: String by remember {
+        mutableStateOf("")
     }
+
+    val navigateToHomeScreen: (User) -> Unit = { user ->
+        if (user.type.contains("teknisi", true)) {
+            navigator.navigate(HomeTechnicianScreenDestination())
+        } else {
+            navigator.navigate(HomeEmployeeScreenDestination())
+        }
+    }
+
+    val signInWithEmailAndPassword: () -> Unit = {
+        loginViewModel.signInWithEmailAndPassword(email, password)
+    }
+
+    LaunchedEffect(key1 = loginResult) {
+        when (loginResult) {
+            Resource.Idling -> {}
+            Resource.Loading -> loginViewModel.onLoginLoadingState(true)
+            is Resource.Error -> {
+                loginViewModel.onLoginLoadingState(false)
+                messageDialog = loginResult.error.toString()
+                infoDialogUseCase.show()
+            }
+            is Resource.Success -> {
+                val uid = loginResult.data.user?.uid ?: ""
+                loginViewModel.getUser(uid)
+            }
+        }
+    }
+
+    LaunchedEffect(key1 = loggedUser) {
+        when (loggedUser) {
+            Resource.Idling -> {}
+            Resource.Loading -> {}
+            is Resource.Error -> {
+                loginViewModel.onLoginLoadingState(false)
+                messageDialog = loggedUser.error.toString()
+                infoDialogUseCase.show()
+            }
+            is Resource.Success -> {
+                navigateToHomeScreen(loggedUser.data)
+            }
+        }
+    }
+
+    InfoDialog(
+        state = infoDialogUseCase,
+        selection = InfoSelection(
+            positiveButton = SelectionButton(
+                text = "Oke"
+            ),
+            onPositiveClick = {
+                infoDialogUseCase.finish()
+            }
+        ),
+        body = InfoBody.Default(bodyText = messageDialog)
+    )
 
     Scaffold(
         modifier = modifier
@@ -86,8 +164,9 @@ fun LoginScreen(
             Spacer(modifier = Modifier.height(40.dp))
             KrakatauButton(
                 title = "Login",
-                onClicked = navigateToHomeScreen,
-                enabled = loginButtonEnabled
+                onClicked = signInWithEmailAndPassword,
+                enabled = loginButtonEnabled,
+                loading = loadingState
             )
         }
     }

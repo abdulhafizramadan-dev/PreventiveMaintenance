@@ -1,4 +1,4 @@
-package com.alifalpian.krakatauapp.domain
+package com.alifalpian.krakatauapp.domain.model
 
 data class MaintenanceEquipment(
     val id: String,

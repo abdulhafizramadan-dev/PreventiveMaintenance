@@ -23,7 +23,7 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.em
 import androidx.compose.ui.unit.sp
-import com.alifalpian.krakatauapp.domain.EmployeeDashboardEquipment
+import com.alifalpian.krakatauapp.domain.model.EmployeeDashboardEquipment
 import com.alifalpian.krakatauapp.ui.theme.PreventiveMaintenanceTheme
 
 @Composable

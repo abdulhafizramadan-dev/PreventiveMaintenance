@@ -1,4 +1,4 @@
-package com.alifalpian.krakatauapp.domain
+package com.alifalpian.krakatauapp.domain.model
 
 import androidx.annotation.DrawableRes
 

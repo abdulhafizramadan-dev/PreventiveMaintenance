@@ -13,8 +13,8 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
-import com.alifalpian.krakatauapp.domain.EmployeeDashboardEquipment
-import com.alifalpian.krakatauapp.domain.User
+import com.alifalpian.krakatauapp.domain.model.EmployeeDashboardEquipment
+import com.alifalpian.krakatauapp.domain.model.User
 import com.alifalpian.krakatauapp.presentation.destinations.LoginScreenDestination
 import com.alifalpian.krakatauapp.ui.components.dashboard.DashboardEmployeeEquipmentItem
 import com.alifalpian.krakatauapp.ui.components.krakatau.KrakatauDashboardTopAppBar

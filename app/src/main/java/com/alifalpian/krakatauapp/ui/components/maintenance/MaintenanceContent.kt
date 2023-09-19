@@ -21,8 +21,8 @@ import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
-import com.alifalpian.krakatauapp.domain.MaintenanceEquipment
-import com.alifalpian.krakatauapp.domain.PreventiveCheckList
+import com.alifalpian.krakatauapp.domain.model.MaintenanceEquipment
+import com.alifalpian.krakatauapp.domain.model.PreventiveCheckList
 import com.alifalpian.krakatauapp.ui.components.krakatau.KrakatauOutlinedTextField
 import com.alifalpian.krakatauapp.ui.theme.PreventiveMaintenanceTheme
 

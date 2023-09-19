@@ -13,7 +13,7 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
-import com.alifalpian.krakatauapp.domain.MaintenanceEquipment
+import com.alifalpian.krakatauapp.domain.model.MaintenanceEquipment
 import com.alifalpian.krakatauapp.ui.components.HistoryDateFilter
 import com.alifalpian.krakatauapp.ui.components.krakatau.KrakatauTopAppBar
 import com.alifalpian.krakatauapp.ui.components.maintenance.MaintenanceTechnicianItem
@@ -59,7 +59,7 @@ fun HistoryTechnicianScreen(
         config = CalendarConfig(
             yearSelection = true,
             monthSelection = true,
-            style = CalendarStyle.MONTH, 
+            style = CalendarStyle.MONTH,
         ),
         selection = CalendarSelection.Period { startDate, endDate ->  
 

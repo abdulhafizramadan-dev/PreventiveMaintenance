@@ -1,9 +1,9 @@
 package com.alifalpian.krakatauapp.presentation.technician.maintenance.form
 
 import androidx.lifecycle.ViewModel
-import com.alifalpian.krakatauapp.domain.MaintenanceEquipment
-import com.alifalpian.krakatauapp.domain.MaintenanceTools
-import com.alifalpian.krakatauapp.domain.SafetyMaintenance
+import com.alifalpian.krakatauapp.domain.model.MaintenanceEquipment
+import com.alifalpian.krakatauapp.domain.model.MaintenanceTools
+import com.alifalpian.krakatauapp.domain.model.SafetyMaintenance
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.MutableStateFlow
 import javax.inject.Inject

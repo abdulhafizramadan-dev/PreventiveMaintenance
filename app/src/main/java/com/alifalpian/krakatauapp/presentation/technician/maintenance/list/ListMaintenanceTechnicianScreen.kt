@@ -17,7 +17,7 @@ import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
-import com.alifalpian.krakatauapp.domain.MaintenanceEquipment
+import com.alifalpian.krakatauapp.domain.model.MaintenanceEquipment
 import com.alifalpian.krakatauapp.presentation.destinations.MaintenanceFormTechnicianScreenDestination
 import com.alifalpian.krakatauapp.presentation.destinations.StartQuestionMaintenanceScreenDestination
 import com.alifalpian.krakatauapp.presentation.technician.maintenance.form.MaintenanceFormTechnicianScreenStatus

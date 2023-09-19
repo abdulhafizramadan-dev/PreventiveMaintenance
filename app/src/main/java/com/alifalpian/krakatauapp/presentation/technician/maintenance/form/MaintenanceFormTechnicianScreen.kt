@@ -23,8 +23,8 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
-import com.alifalpian.krakatauapp.domain.MaintenanceTools
-import com.alifalpian.krakatauapp.domain.SafetyMaintenance
+import com.alifalpian.krakatauapp.domain.model.MaintenanceTools
+import com.alifalpian.krakatauapp.domain.model.SafetyMaintenance
 import com.alifalpian.krakatauapp.ui.components.krakatau.KrakatauButton
 import com.alifalpian.krakatauapp.ui.components.krakatau.KrakatauTabRow
 import com.alifalpian.krakatauapp.ui.components.krakatau.KrakatauTopAppBar

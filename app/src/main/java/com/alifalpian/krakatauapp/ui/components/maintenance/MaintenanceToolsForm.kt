@@ -28,7 +28,7 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.alifalpian.krakatauapp.R
-import com.alifalpian.krakatauapp.domain.MaintenanceTools
+import com.alifalpian.krakatauapp.domain.model.MaintenanceTools
 import com.alifalpian.krakatauapp.ui.components.krakatau.KrakatauOutlinedTextFieldWithLabel
 import com.alifalpian.krakatauapp.ui.theme.PreventiveMaintenanceTheme
 
@@ -43,7 +43,7 @@ fun MaintenanceToolsForm(
     tools: List<MaintenanceTools>,
     type: MaintenanceToolsFormType = MaintenanceToolsFormType.Technician,
     onAddButtonClicked: () -> Unit = {},
-    onMaintenanceFormChange: (Int, MaintenanceTools) -> Unit = {_, _ -> }
+    onMaintenanceFormChange: (Int, MaintenanceTools) -> Unit = { _, _ -> }
 ) {
     val onDescriptionChanged: (Int, String) -> Unit = { index, description ->
         val maintenanceTools = tools[index].copy(

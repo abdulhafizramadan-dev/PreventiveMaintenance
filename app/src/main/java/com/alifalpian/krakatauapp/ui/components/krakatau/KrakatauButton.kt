@@ -21,8 +21,11 @@ fun KrakatauButton(
     onClicked: () -> Unit,
     contentColor: Color = Color.White,
     containerColor: Color = MaterialTheme.colorScheme.primary,
-    enabled: Boolean = true
+    enabled: Boolean = true,
+    loading: Boolean = false,
 ) {
+    val text = if (loading) "Loading..." else title
+    val enableButton = if (loading) false else enabled
     Button(
         onClick = onClicked,
         modifier = modifier,
@@ -31,9 +34,9 @@ fun KrakatauButton(
             containerColor = containerColor,
             contentColor = contentColor
         ),
-        enabled = enabled
+        enabled = enableButton
     ) {
-        Text(text = title)
+        Text(text = text)
     }
 }
 
