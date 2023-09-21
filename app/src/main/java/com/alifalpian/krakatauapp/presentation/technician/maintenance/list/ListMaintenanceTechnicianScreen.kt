@@ -1,5 +1,6 @@
 package com.alifalpian.krakatauapp.presentation.technician.maintenance.list
 
+import android.util.Log
 import androidx.compose.foundation.ExperimentalFoundationApi
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.PaddingValues
@@ -13,28 +14,41 @@ import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Surface
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.runtime.collectAsState
+import androidx.compose.runtime.getValue
 import androidx.compose.runtime.rememberCoroutineScope
+import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
+import androidx.hilt.navigation.compose.hiltViewModel
+import com.alifalpian.krakatauapp.domain.model.Equipment
 import com.alifalpian.krakatauapp.domain.model.MaintenanceEquipment
+import com.alifalpian.krakatauapp.domain.model.Resource
 import com.alifalpian.krakatauapp.presentation.destinations.MaintenanceFormTechnicianScreenDestination
 import com.alifalpian.krakatauapp.presentation.destinations.StartQuestionMaintenanceScreenDestination
 import com.alifalpian.krakatauapp.presentation.technician.maintenance.form.MaintenanceFormTechnicianScreenStatus
 import com.alifalpian.krakatauapp.ui.components.krakatau.KrakatauTopAppBarWithTabRow
 import com.alifalpian.krakatauapp.ui.components.maintenance.MaintenanceTechnicianItem
+import com.alifalpian.krakatauapp.ui.components.maintenance.ShimmerMaintenanceTechnicianItem
 import com.alifalpian.krakatauapp.ui.theme.PreventiveMaintenanceTheme
 import com.ramcosta.composedestinations.annotation.Destination
+import com.ramcosta.composedestinations.annotation.RootNavGraph
 import com.ramcosta.composedestinations.navigation.DestinationsNavigator
 import com.ramcosta.composedestinations.navigation.EmptyDestinationsNavigator
 
+private const val TAG = "ListMaintenanceTechnici"
+
+@RootNavGraph(start = true)
 @Destination
 @ExperimentalFoundationApi
 @ExperimentalMaterial3Api
 @Composable
 fun ListMaintenanceTechnicianScreen(
     modifier: Modifier = Modifier,
-    navigator: DestinationsNavigator = EmptyDestinationsNavigator
+    navigator: DestinationsNavigator = EmptyDestinationsNavigator,
+    listMaintenanceTechnicianViewModel: ListMaintenanceTechnicianViewModel = hiltViewModel(),
 ) {
     val tabPager = listOf(
         "Semua", "Selesai"
@@ -43,24 +57,34 @@ fun ListMaintenanceTechnicianScreen(
         tabPager.size
     }
     val scope = rememberCoroutineScope()
-    val dummyMaintenanceEquipments = (1..10).map {
-        MaintenanceEquipment(
-            id = it.toString(),
-            order = "2210043175",
-            date = "09/12/2023",
-            interval = "4 MON",
-            execution = "PG IT",
-            location = "Ruang Staff SEKPER (WTP)",
-            equipmentName = "LAPTOP DELL LATITUDE 3420 SKP4",
-            technicianName = "Hasan Maulana"
-        )
+
+    val listMaintenanceTechnicianUiState by listMaintenanceTechnicianViewModel.listMaintenanceTechnicianUiState.collectAsState()
+    val equipmentsWillMaintenance = listMaintenanceTechnicianUiState.equipmentsWillMaintenance
+
+    LaunchedEffect(key1 = Unit) {
+        listMaintenanceTechnicianViewModel.getEquipmentsWillBeMaintenance("E1jlNeppUxgSxnw9Rh7XYx0cWO93")
     }
 
-    val onAllMaintenanceEquipmentClicked: (MaintenanceEquipment) -> Unit = {
+    LaunchedEffect(key1 = equipmentsWillMaintenance) {
+        when (equipmentsWillMaintenance) {
+            Resource.Idling -> {}
+            Resource.Loading -> Log.d(TAG, "ListMaintenanceTechnicianScreen: Loading...")
+            is Resource.Error -> Log.d(
+                TAG,
+                "ListMaintenanceTechnicianScreen: Error = ${equipmentsWillMaintenance.error}"
+            )
+            is Resource.Success -> Log.d(
+                TAG,
+                "ListMaintenanceTechnicianScreen: Success = ${equipmentsWillMaintenance.data}"
+            )
+        }
+    }
+
+    val onAllMaintenanceEquipmentClicked: (Equipment) -> Unit = {
         navigator.navigate(StartQuestionMaintenanceScreenDestination())
     }
 
-    val onFinishedMaintenanceEquipmentClicked: (MaintenanceEquipment) -> Unit = {
+    val onFinishedMaintenanceEquipmentClicked: (Equipment) -> Unit = {
         navigator.navigate(MaintenanceFormTechnicianScreenDestination(status = MaintenanceFormTechnicianScreenStatus.Finish))
     }
 
@@ -80,17 +104,18 @@ fun ListMaintenanceTechnicianScreen(
             state = pagerState,
             modifier = Modifier
                 .padding(paddingValues)
-                .fillMaxSize()
+                .fillMaxSize(),
+            verticalAlignment = Alignment.Top
         ) { page ->
             when (page) {
                 0 -> ListMaintenanceTechnicianContent(
-                    equipments = dummyMaintenanceEquipments,
-                    onEquipmentClicked = onAllMaintenanceEquipmentClicked
+                    equipments = equipmentsWillMaintenance,
+                    onEquipmentClicked = {}
                 )
-                1 -> ListMaintenanceTechnicianContent(
-                    equipments = dummyMaintenanceEquipments,
-                    onEquipmentClicked = onFinishedMaintenanceEquipmentClicked
-                )
+//                1 -> ListMaintenanceTechnicianContent(
+//                    equipments = dummyMaintenanceEquipments,
+//                    onEquipmentClicked = onFinishedMaintenanceEquipmentClicked
+//                )
             }
         }
     }
@@ -99,19 +124,26 @@ fun ListMaintenanceTechnicianScreen(
 @Composable
 private fun ListMaintenanceTechnicianContent(
     modifier: Modifier = Modifier,
-    equipments: List<MaintenanceEquipment>,
-    onEquipmentClicked: (MaintenanceEquipment) -> Unit = {}
+    equipments: Resource<List<Equipment>>,
+    onEquipmentClicked: (Equipment) -> Unit = {}
 ) {
     LazyColumn(
         modifier = modifier,
         contentPadding = PaddingValues(all = 12.dp),
         verticalArrangement = Arrangement.spacedBy(10.dp)
     ) {
-        items(items = equipments, key = { it.id }) { equipment ->
-            MaintenanceTechnicianItem(
-                equipment = equipment,
-                onClicked = onEquipmentClicked
-            )
+        if (equipments is Resource.Loading) {
+            items(10) {
+                ShimmerMaintenanceTechnicianItem()
+            }
+        }
+        if (equipments is Resource.Success) {
+            items(items = equipments.data, key = { it.documentId }) { equipment ->
+                MaintenanceTechnicianItem(
+                    equipment = equipment,
+                    onClicked = onEquipmentClicked
+                )
+            }
         }
     }
 }

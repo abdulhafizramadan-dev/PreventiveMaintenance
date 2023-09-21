@@ -57,7 +57,7 @@ fun DashboardEmployeeScreen(
 
     Scaffold(
         topBar = {
-            KrakatauDashboardTopAppBar(user = user)
+//            KrakatauDashboardTopAppBar(user = user)
         },
         modifier = modifier
     ) { paddingValues ->

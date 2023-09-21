@@ -3,6 +3,7 @@ package com.alifalpian.krakatauapp.ui.components.maintenance
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
+import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.Row
@@ -27,8 +28,10 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.em
 import androidx.compose.ui.unit.sp
+import com.alifalpian.krakatauapp.domain.model.Equipment
 import com.alifalpian.krakatauapp.domain.model.MaintenanceEquipment
 import com.alifalpian.krakatauapp.ui.theme.PreventiveMaintenanceTheme
+import com.valentinilk.shimmer.shimmer
 
 enum class MaintenanceTechnicianItemType {
     AllEquipment, PendingApproval, Approved
@@ -37,9 +40,9 @@ enum class MaintenanceTechnicianItemType {
 @Composable
 fun MaintenanceTechnicianItem(
     modifier: Modifier = Modifier,
-    equipment: MaintenanceEquipment,
+    equipment: Equipment,
     type: MaintenanceTechnicianItemType = MaintenanceTechnicianItemType.AllEquipment,
-    onClicked: (MaintenanceEquipment) -> Unit = {}
+    onClicked: (Equipment) -> Unit = {}
 ) {
     Row(
         modifier = modifier
@@ -51,7 +54,7 @@ fun MaintenanceTechnicianItem(
     ) {
         Column(modifier = Modifier.weight(1f)) {
             Text(
-                text = equipment.order,
+                text = equipment.equipment,
                 lineHeight = 1.67.em,
                 fontSize = 12.sp,
                 fontWeight = FontWeight.Medium,
@@ -59,7 +62,7 @@ fun MaintenanceTechnicianItem(
             )
             Spacer(modifier = Modifier.width(4.dp))
             Text(
-                text = equipment.equipmentName,
+                text = equipment.description,
                 lineHeight = 1.67.em,
                 fontSize = 12.sp,
                 fontWeight = FontWeight.Medium,
@@ -102,6 +105,20 @@ fun MaintenanceTechnicianItem(
     }
 }
 
+@Composable
+fun ShimmerMaintenanceTechnicianItem(
+    modifier: Modifier = Modifier,
+) {
+    Box(
+        modifier = modifier.shimmer()
+            .height(100.dp)
+            .fillMaxWidth()
+            .clip(shape = RoundedCornerShape(10.dp))
+            .background(color = Color(0xffe9e9e9))
+            .padding(vertical = 8.dp, horizontal = 12.dp)
+    )
+}
+
 @Preview
 @Composable
 fun PreviewMaintenanceTechnicianItem() {
@@ -125,7 +142,8 @@ fun PreviewMaintenanceTechnicianItem() {
             ) {
                 items(items = dummyMaintenanceEquipments, key = { it.id }) {
                     val type = if (it.id.toInt() % 2 == 0) MaintenanceTechnicianItemType.AllEquipment else MaintenanceTechnicianItemType.Approved
-                    MaintenanceTechnicianItem(equipment = it, type = type)
+//                    MaintenanceTechnicianItem(equipment = it, type = type)
+                    ShimmerMaintenanceTechnicianItem()
                 }
             }
         }

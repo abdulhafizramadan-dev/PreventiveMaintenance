@@ -83,7 +83,7 @@ fun HistoryTechnicianScreen(
                 HistoryDateFilter(date = LocalDate.now(), onFilterIconClicked = showCalendar)
             }
             items(items = dummyMaintenanceEquipments, key = { it.id }) {
-                MaintenanceTechnicianItem(equipment = it)
+//                MaintenanceTechnicianItem(equipment = it)
             }
         }
     }

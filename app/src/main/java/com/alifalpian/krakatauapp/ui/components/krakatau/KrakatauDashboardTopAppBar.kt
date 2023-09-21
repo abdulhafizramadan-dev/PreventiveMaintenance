@@ -24,6 +24,7 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
+import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.TextStyle
@@ -33,11 +34,27 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.em
 import androidx.compose.ui.unit.sp
 import com.alifalpian.krakatauapp.R
+import com.alifalpian.krakatauapp.domain.model.Resource
 import com.alifalpian.krakatauapp.domain.model.User
 import com.alifalpian.krakatauapp.ui.theme.PreventiveMaintenanceTheme
+import com.alifalpian.krakatauapp.ui.theme.ShimmerColor
+import com.valentinilk.shimmer.shimmer
 
 @Composable
 fun KrakatauDashboardTopAppBar(
+    modifier: Modifier = Modifier,
+    user: Resource<User> = Resource.Idling
+) {
+    when (user) {
+        Resource.Idling -> {}
+        Resource.Loading,
+        is Resource.Error -> KrakatauDashboardTopAppBarLoading()
+        is Resource.Success -> KrakatauDashboardTopAppBarContent(user = user.data, modifier = modifier)
+    }
+}
+
+@Composable
+private fun KrakatauDashboardTopAppBarContent(
     modifier: Modifier = Modifier,
     user: User
 ) {
@@ -87,7 +104,8 @@ fun KrakatauDashboardTopAppBar(
             }
             Spacer(modifier = Modifier.width(30.dp))
             Row(
-                modifier = Modifier.offset(y = 8.dp)
+                modifier = Modifier
+                    .offset(y = 8.dp)
                     .clip(RoundedCornerShape(size = 20.dp))
                     .background(color = MaterialTheme.colorScheme.background)
                     .padding(start = 8.dp, top = 4.dp, end = 4.dp, bottom = 4.dp),
@@ -98,6 +116,78 @@ fun KrakatauDashboardTopAppBar(
                     lineHeight = 2.33.em,
                     style = TextStyle(fontSize = 12.sp)
                 )
+                Spacer(modifier = Modifier.width(16.dp))
+                Image(
+                    painter = painterResource(id = R.drawable.img_profile),
+                    contentDescription = "IMG Profile",
+                    modifier = modifier
+                        .size(25.dp)
+                        .clip(CircleShape)
+                )
+            }
+            Spacer(modifier = Modifier.width(22.dp))
+        }
+    }
+}
+
+
+@Composable
+private fun KrakatauDashboardTopAppBarLoading(
+    modifier: Modifier = Modifier,
+) {
+    Box(
+        modifier = modifier
+            .height(98.dp)
+            .fillMaxWidth(),
+    ) {
+        Image(
+            painter = painterResource(id = R.drawable.bg_dashboard_top_app_bar),
+            contentDescription = null,
+            contentScale = ContentScale.FillBounds,
+            modifier = Modifier.fillMaxSize()
+        )
+        Row(
+            modifier = Modifier.fillMaxWidth(),
+            verticalAlignment = Alignment.CenterVertically
+        ) {
+            Column(
+                modifier = Modifier
+                    .weight(1.5f)
+                    .padding(start = 30.dp, top = 24.dp)
+                    .shimmer()
+            ) {
+                Box(
+                    modifier = Modifier
+                        .height(20.dp)
+                        .fillMaxWidth(0.7f)
+                        .background(ShimmerColor)
+                )
+                Spacer(modifier = Modifier.height(4.dp))
+                Box(
+                    modifier = Modifier
+                        .height(16.dp)
+                        .fillMaxWidth(0.5f)
+                        .background(ShimmerColor)
+                )
+                Spacer(modifier = Modifier.height(4.dp))
+                Box(
+                    modifier = Modifier
+                        .height(16.dp)
+                        .fillMaxWidth(0.5f)
+                        .background(ShimmerColor)
+                )
+            }
+            Spacer(modifier = Modifier.width(30.dp))
+            Row(
+                modifier = Modifier
+                    .offset(y = 8.dp)
+                    .clip(RoundedCornerShape(size = 20.dp))
+                    .background(color = MaterialTheme.colorScheme.background)
+                    .padding(start = 8.dp, top = 4.dp, end = 4.dp, bottom = 4.dp)
+                    .shimmer(),
+                verticalAlignment = Alignment.CenterVertically
+            ) {
+                Box(modifier = Modifier.width(50.dp))
                 Spacer(modifier = Modifier.width(16.dp))
                 Image(
                     painter = painterResource(id = R.drawable.img_profile),
@@ -128,7 +218,8 @@ fun PreviewKrakatauDashboardTopAppBar() {
             )
             Scaffold(
                 topBar = {
-                    KrakatauDashboardTopAppBar(user = user)
+//                    KrakatauDashboardTopAppBar()
+                    KrakatauDashboardTopAppBarLoading()
                 }
             ) { paddingValues ->
                 Box(modifier = Modifier.padding(paddingValues))

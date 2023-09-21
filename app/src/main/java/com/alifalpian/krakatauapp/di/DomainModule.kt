@@ -2,9 +2,11 @@ package com.alifalpian.krakatauapp.di
 
 import com.alifalpian.krakatauapp.data.repository.FirebaseAuthRepositoryImpl
 import com.alifalpian.krakatauapp.data.repository.FirebaseFirestoreRepositoryImpl
+import com.alifalpian.krakatauapp.domain.interactor.HomeInteractor
 import com.alifalpian.krakatauapp.domain.interactor.LoginInteractor
 import com.alifalpian.krakatauapp.domain.repository.FirebaseAuthRepository
 import com.alifalpian.krakatauapp.domain.repository.FirebaseFirestoreRepository
+import com.alifalpian.krakatauapp.domain.usecase.HomeUseCase
 import com.alifalpian.krakatauapp.domain.usecase.LoginUseCase
 import dagger.Binds
 import dagger.Module
@@ -34,5 +36,11 @@ abstract class DomainModule {
     abstract fun provideFirebaseFirestoreRepository(
         firebaseFirestoreRepositoryImpl: FirebaseFirestoreRepositoryImpl
     ): FirebaseFirestoreRepository
+
+    @Binds
+    @Singleton
+    abstract fun provideHomeUseCase(
+        homeInteractor: HomeInteractor
+    ): HomeUseCase
 
 }
