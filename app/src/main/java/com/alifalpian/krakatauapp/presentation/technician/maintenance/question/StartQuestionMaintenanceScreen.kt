@@ -24,6 +24,7 @@ import com.alifalpian.krakatauapp.ui.components.krakatau.KrakatauButton
 import com.alifalpian.krakatauapp.ui.components.krakatau.KrakatauTopAppBar
 import com.alifalpian.krakatauapp.ui.components.krakatau.KrakatauTopAppBarType
 import com.alifalpian.krakatauapp.ui.theme.PreventiveMaintenanceTheme
+import com.alifalpian.krakatauapp.util.emptyString
 import com.ramcosta.composedestinations.annotation.Destination
 import com.ramcosta.composedestinations.navigation.DestinationsNavigator
 import com.ramcosta.composedestinations.navigation.EmptyDestinationsNavigator
@@ -34,13 +35,14 @@ import com.ramcosta.composedestinations.navigation.EmptyDestinationsNavigator
 @Composable
 fun StartQuestionMaintenanceScreen(
     modifier: Modifier = Modifier,
-    navigator: DestinationsNavigator = EmptyDestinationsNavigator
+    navigator: DestinationsNavigator = EmptyDestinationsNavigator,
+    equipmentDocumentId: String = emptyString()
 ) {
     val onNavigationIconClicked: () -> Unit = {
         navigator.navigateUp()
     }
     val onStartMaintenanceButtonClicked: () -> Unit = {
-        navigator.navigate(MaintenanceFormTechnicianScreenDestination())
+        navigator.navigate(MaintenanceFormTechnicianScreenDestination(equipmentDocumentId = equipmentDocumentId))
     }
     Scaffold(
         topBar = {

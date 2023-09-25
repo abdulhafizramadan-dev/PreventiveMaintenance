@@ -1,6 +1,10 @@
 package com.alifalpian.krakatauapp.domain.interactor
 
 import com.alifalpian.krakatauapp.domain.model.Equipment
+import com.alifalpian.krakatauapp.domain.model.MaintenanceCheckPoint
+import com.alifalpian.krakatauapp.domain.model.MaintenanceHistory
+import com.alifalpian.krakatauapp.domain.model.MaintenanceSafetyUse
+import com.alifalpian.krakatauapp.domain.model.MaintenanceTools
 import com.alifalpian.krakatauapp.domain.model.Resource
 import com.alifalpian.krakatauapp.domain.model.TechnicianDashboardEquipment
 import com.alifalpian.krakatauapp.domain.model.User
@@ -26,12 +30,39 @@ class HomeInteractor @Inject constructor(
         return firebaseFirestoreRepository.getUser(uid)
     }
 
-    override fun getTechnicianDashboardEquipments(uid: String): Flow<Resource<List<TechnicianDashboardEquipment>>> {
-        return firebaseFirestoreRepository.getTechnicianDashboardEquipments(uid)
+    override fun getEquipment(equipmentDocumentId: String): Flow<Resource<Equipment>> {
+        return firebaseFirestoreRepository.getEquipment(equipmentDocumentId)
     }
 
-    override fun getEquipmentsWillBeMaintenance(uid: String): Flow<Resource<List<Equipment>>> {
-        return firebaseFirestoreRepository.getEquipmentsWillBeMaintenance(uid)
+    override fun getTechnicianDashboardEquipments(technicianDocumentId: String): Flow<Resource<List<TechnicianDashboardEquipment>>> {
+        return firebaseFirestoreRepository.getTechnicianDashboardEquipments(technicianDocumentId)
     }
 
+    override fun getEquipmentsWillBeMaintenance(technicianDocumentId: String): Flow<Resource<List<Equipment>>> {
+        return firebaseFirestoreRepository.getEquipmentsWillBeMaintenance(technicianDocumentId)
+    }
+
+    override fun getEquipmentsHasBeenMaintenance(technicianDocumentId: String): Flow<Resource<List<Equipment>>> {
+        return firebaseFirestoreRepository.getEquipmentsHasBeenMaintenance(technicianDocumentId)
+    }
+
+    override fun getMaintenanceHistory(maintenanceHistoryDocumentId: String): Flow<Resource<MaintenanceHistory>> {
+        return firebaseFirestoreRepository.getMaintenanceHistory(maintenanceHistoryDocumentId)
+    }
+
+    override fun getMaintenanceCheckPoint(checkPointId: String): Flow<Resource<List<MaintenanceCheckPoint>>> {
+        return firebaseFirestoreRepository.getMaintenanceCheckPoint(checkPointId)
+    }
+
+    override fun getMaintenanceCheckPointHistory(checkPointId: String, maintenanceCheckPointHistoryDocumentId: String): Flow<Resource<List<MaintenanceCheckPoint>>> {
+        return firebaseFirestoreRepository.getMaintenanceCheckPointHistory(checkPointId, maintenanceCheckPointHistoryDocumentId)
+    }
+
+    override fun getMaintenanceTools(maintenanceHistoryDocumentId: String): Flow<Resource<List<MaintenanceTools>>> {
+        return firebaseFirestoreRepository.getMaintenanceTools(maintenanceHistoryDocumentId)
+    }
+
+    override fun getMaintenanceSafetyUse(maintenanceHistoryDocumentId: String): Flow<Resource<List<MaintenanceSafetyUse>>> {
+        return firebaseFirestoreRepository.getMaintenanceSafetyUse(maintenanceHistoryDocumentId)
+    }
 }

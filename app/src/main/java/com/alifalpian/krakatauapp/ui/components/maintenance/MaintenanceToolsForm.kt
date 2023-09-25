@@ -29,6 +29,7 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.alifalpian.krakatauapp.R
 import com.alifalpian.krakatauapp.domain.model.MaintenanceTools
+import com.alifalpian.krakatauapp.domain.model.Resource
 import com.alifalpian.krakatauapp.ui.components.krakatau.KrakatauOutlinedTextFieldWithLabel
 import com.alifalpian.krakatauapp.ui.theme.PreventiveMaintenanceTheme
 
@@ -40,69 +41,77 @@ enum class MaintenanceToolsFormType {
 @Composable
 fun MaintenanceToolsForm(
     modifier: Modifier = Modifier,
-    tools: List<MaintenanceTools>,
+    maintenanceTools: Resource<List<MaintenanceTools>>,
     type: MaintenanceToolsFormType = MaintenanceToolsFormType.Technician,
     onAddButtonClicked: () -> Unit = {},
-    onMaintenanceFormChange: (Int, MaintenanceTools) -> Unit = { _, _ -> }
+    onMaintenanceFormChange: (Int, MaintenanceTools) -> Unit = { _, _ -> },
+    enabled: Boolean = false
 ) {
-    val onDescriptionChanged: (Int, String) -> Unit = { index, description ->
-        val maintenanceTools = tools[index].copy(
-            description = description
-        )
-        onMaintenanceFormChange(index, maintenanceTools)
-    }
-    val onQuantityChanged: (Int, Int) -> Unit = { index, quantity ->
-        val maintenanceTools = tools[index].copy(
-            quantity = quantity
-        )
-        onMaintenanceFormChange(index, maintenanceTools)
-    }
-    val onUoMChanged: (Int, Int) -> Unit = { index, unitOfMeasurement ->
-        val maintenanceTools = tools[index].copy(
-            unitOfMeasurement = unitOfMeasurement
-        )
-        onMaintenanceFormChange(index, maintenanceTools)
-    }
-    Column(
-        modifier = Modifier
-            .fillMaxWidth()
-            .background(color = Color(0xFFE3E3E3))
-            .then(modifier)
-    ) {
-        MaintenanceToolsFormHeader(
-            type = type,
-            onAddButtonClicked = onAddButtonClicked
-        )
-        tools.forEachIndexed { index, tool ->
-            Spacer(modifier = Modifier.height(14.dp))
-            KrakatauOutlinedTextFieldWithLabel(
-                value = tool.description,
-                onValueChanged = { onDescriptionChanged(index, it) },
-                label = "Description"
+    if (maintenanceTools is Resource.Success) {
+        val tools = maintenanceTools.data
+        val onDescriptionChanged: (Int, String) -> Unit = { index, description ->
+            val maintenanceTools = tools[index].copy(
+                description = description
             )
-            Spacer(modifier = Modifier.height(10.dp))
-            KrakatauOutlinedTextFieldWithLabel(
-                value = tool.quantity.toString(),
-                onValueChanged = {
-                    val number = if (it.isNotEmpty()) it.toInt() else 0
-                    onQuantityChanged(index, number)
-                },
-                keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Number),
-                label = "Quantity"
+            onMaintenanceFormChange(index, maintenanceTools)
+        }
+        val onQuantityChanged: (Int, Int) -> Unit = { index, quantity ->
+            val maintenanceTools = tools[index].copy(
+                quantity = quantity
             )
-            Spacer(modifier = Modifier.height(10.dp))
-            KrakatauOutlinedTextFieldWithLabel(
-                value = tool.unitOfMeasurement.toString(),
-                onValueChanged = {
-                    val number = if (it.isNotEmpty()) it.toInt() else 0
-                    onUoMChanged(index, number)
-                },
-                keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Number),
-                label = "Unit of Measurement"
+            onMaintenanceFormChange(index, maintenanceTools)
+        }
+        val onUoMChanged: (Int, Int) -> Unit = { index, unitOfMeasurement ->
+            val maintenanceTools = tools[index].copy(
+                unitOfMeasurement = unitOfMeasurement
             )
-            if (index != tools.lastIndex) {
-                Spacer(modifier = Modifier.height(20.dp))
-                Divider(thickness = 2.dp)
+            onMaintenanceFormChange(index, maintenanceTools)
+        }
+        Column(
+            modifier = Modifier
+                .fillMaxWidth()
+                .background(color = Color(0xFFE3E3E3))
+                .then(modifier)
+        ) {
+            MaintenanceToolsFormHeader(
+                type = type,
+                onAddButtonClicked = onAddButtonClicked,
+                enabled = enabled
+            )
+            tools.forEachIndexed { index, tool ->
+                Spacer(modifier = Modifier.height(14.dp))
+                KrakatauOutlinedTextFieldWithLabel(
+                    value = tool.description,
+                    onValueChanged = { onDescriptionChanged(index, it) },
+                    label = "Description",
+                    enabled = enabled
+                )
+                Spacer(modifier = Modifier.height(10.dp))
+                KrakatauOutlinedTextFieldWithLabel(
+                    value = tool.quantity.toString(),
+                    onValueChanged = {
+                        val number = if (it.isNotEmpty()) it.toInt() else 0
+                        onQuantityChanged(index, number)
+                    },
+                    keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Number),
+                    label = "Quantity",
+                    enabled = enabled
+                )
+                Spacer(modifier = Modifier.height(10.dp))
+                KrakatauOutlinedTextFieldWithLabel(
+                    value = tool.unitOfMeasurement.toString(),
+                    onValueChanged = {
+                        val number = if (it.isNotEmpty()) it.toInt() else 0
+                        onUoMChanged(index, number)
+                    },
+                    keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Number),
+                    label = "Unit of Measurement",
+                    enabled = enabled
+                )
+                if (index != tools.lastIndex) {
+                    Spacer(modifier = Modifier.height(20.dp))
+                    Divider(thickness = 2.dp)
+                }
             }
         }
     }
@@ -112,7 +121,8 @@ fun MaintenanceToolsForm(
 fun MaintenanceToolsFormHeader(
     modifier: Modifier = Modifier,
     type: MaintenanceToolsFormType = MaintenanceToolsFormType.Technician,
-    onAddButtonClicked: () -> Unit = {}
+    onAddButtonClicked: () -> Unit = {},
+    enabled: Boolean = false
 ) {
     Row(
         modifier = modifier.fillMaxWidth(),
@@ -127,7 +137,8 @@ fun MaintenanceToolsFormHeader(
         if (type == MaintenanceToolsFormType.Technician) {
             IconButton(
                 onClick = onAddButtonClicked,
-                modifier = Modifier.offset(x = 16.dp)
+                modifier = Modifier.offset(x = 16.dp),
+                enabled = enabled
             ) {
                 Icon(
                     painter = painterResource(id = R.drawable.ic_baseline_add_circle_outline_24),
@@ -147,16 +158,16 @@ fun PreviewMaintenanceToolsForm() {
         Surface {
             val tools = (1..3).map {
                 MaintenanceTools(
-                    id = it.toString(),
+                    documentId = it.toString(),
                     description = "Obeng",
                     quantity = 1,
                     unitOfMeasurement = 1
                 )
             }
-            MaintenanceToolsForm(
-                tools = tools,
-                modifier = Modifier.padding(16.dp)
-            )
+//            MaintenanceToolsForm(
+//                tools = tools,
+//                modifier = Modifier.padding(16.dp)
+//            )
         }
     }
 }

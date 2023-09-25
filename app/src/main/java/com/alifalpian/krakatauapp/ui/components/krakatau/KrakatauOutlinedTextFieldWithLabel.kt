@@ -33,7 +33,8 @@ fun KrakatauOutlinedTextFieldWithLabel(
     onValueChanged: (String) -> Unit,
     label: String,
     placeholder: String = emptyString(),
-    keyboardOptions: KeyboardOptions = KeyboardOptions.Default
+    keyboardOptions: KeyboardOptions = KeyboardOptions.Default,
+    enabled: Boolean = false
 ) {
     Column(
         modifier = modifier.fillMaxWidth()
@@ -51,7 +52,8 @@ fun KrakatauOutlinedTextFieldWithLabel(
             modifier = Modifier
                 .fillMaxWidth()
                 .clip(shape = RoundedCornerShape(topStart = 4.dp, topEnd = 4.dp)),
-            keyboardOptions = keyboardOptions
+            keyboardOptions = keyboardOptions,
+            enabled = enabled
         )
     }
 }

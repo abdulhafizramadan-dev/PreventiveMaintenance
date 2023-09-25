@@ -26,9 +26,9 @@ class DashboardTechnicianViewModel @Inject constructor(
         }
     }
 
-    fun getTechnicianDashboardEquipments(uid: String) {
+    fun getTechnicianDashboardEquipments(technicianDocumentId: String) {
         viewModelScope.launch {
-            homeUseCase.getTechnicianDashboardEquipments(uid).collect { resource ->
+            homeUseCase.getTechnicianDashboardEquipments(technicianDocumentId).collect { resource ->
                 dashboardTechnicianUiState.value = dashboardTechnicianUiState.value.copy(
                     dashboardEquipments = resource
                 )

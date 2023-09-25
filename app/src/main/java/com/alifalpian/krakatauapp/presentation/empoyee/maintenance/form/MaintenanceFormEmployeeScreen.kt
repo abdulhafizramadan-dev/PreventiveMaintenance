@@ -25,14 +25,11 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import com.alifalpian.krakatauapp.domain.model.MaintenanceEquipment
 import com.alifalpian.krakatauapp.domain.model.MaintenanceTools
-import com.alifalpian.krakatauapp.domain.model.PreventiveCheckList
+import com.alifalpian.krakatauapp.domain.model.MaintenanceCheckPoint
 import com.alifalpian.krakatauapp.ui.components.krakatau.KrakatauButton
 import com.alifalpian.krakatauapp.ui.components.krakatau.KrakatauTabRow
 import com.alifalpian.krakatauapp.ui.components.krakatau.KrakatauTopAppBar
 import com.alifalpian.krakatauapp.ui.components.krakatau.KrakatauTopAppBarType
-import com.alifalpian.krakatauapp.ui.components.maintenance.MaintenanceContent
-import com.alifalpian.krakatauapp.ui.components.maintenance.MaintenanceContentType
-import com.alifalpian.krakatauapp.ui.components.maintenance.MaintenanceHeader
 import com.alifalpian.krakatauapp.ui.components.maintenance.MaintenanceSafetyUseForm
 import com.alifalpian.krakatauapp.ui.components.maintenance.MaintenanceSafetyUseFormType
 import com.alifalpian.krakatauapp.ui.components.maintenance.MaintenanceToolsForm
@@ -65,15 +62,15 @@ fun MaintenanceFormEmployeeScreen(
         equipmentName = "LAPTOP DELL LATITUDE 3420 SKP4",
         technicianName = "Hasan Maulana"
     )
-    val preventiveCheckLists = (1..10).map {
-        PreventiveCheckList(
+    val maintenanceCheckPoints = (1..10).map {
+        MaintenanceCheckPoint(
             id = it.toString(),
             text = "Periksa komponen komputer pastikan tidak ada kerusakan"
         )
     }
     val tools = (1..3).map {
         MaintenanceTools(
-            id = it.toString(),
+            documentId = it.toString(),
             description = "Obeng",
             quantity = 1,
             unitOfMeasurement = 1
@@ -116,18 +113,18 @@ fun MaintenanceFormEmployeeScreen(
                 modifier = Modifier.weight(1f)
             ) {
                 item {
-                    MaintenanceHeader(
-                        equipment = equipment,
-                        modifier = Modifier.padding(32.dp)
-                    )
+//                    MaintenanceHeader(
+//                        equipment = equipment,
+//                        modifier = Modifier.padding(32.dp)
+//                    )
                 }
                 item {
-                    MaintenanceContent(
-                        equipment = equipment,
-                        preventiveCheckLists = preventiveCheckLists,
-                        modifier = Modifier.padding(horizontal = 32.dp, vertical = 16.dp),
-                        type = MaintenanceContentType.Technician
-                    )
+//                    MaintenanceContent(
+//                        equipment = equipment,
+//                        maintenanceCheckPoints = maintenanceCheckPoints,
+//                        modifier = Modifier.padding(horizontal = 32.dp, vertical = 16.dp),
+//                        type = MaintenanceContentType.Technician
+//                    )
                 }
                 stickyHeader {
                     KrakatauTabRow(
@@ -140,20 +137,20 @@ fun MaintenanceFormEmployeeScreen(
                     HorizontalPager(state = pagerState) { position ->
                         when (position) {
                             0 -> {
-                                MaintenanceToolsForm(
-                                    tools = tools,
-                                    modifier = Modifier.padding(32.dp),
-                                    type = MaintenanceToolsFormType.Employee,
-                                    onAddButtonClicked = {}
-                                )
+//                                MaintenanceToolsForm(
+//                                    tools = tools,
+//                                    modifier = Modifier.padding(32.dp),
+//                                    type = MaintenanceToolsFormType.Employee,
+//                                    onAddButtonClicked = {}
+//                                )
                             }
 
                             1 -> {
-                                MaintenanceSafetyUseForm(
-                                    tools = emptyList(),
-                                    modifier = Modifier.padding(32.dp),
-                                    type = MaintenanceSafetyUseFormType.Employee
-                                )
+//                                MaintenanceSafetyUseForm(
+//                                    tools = emptyList(),
+//                                    modifier = Modifier.padding(32.dp),
+//                                    type = MaintenanceSafetyUseFormType.Employee
+//                                )
                             }
                         }
                     }

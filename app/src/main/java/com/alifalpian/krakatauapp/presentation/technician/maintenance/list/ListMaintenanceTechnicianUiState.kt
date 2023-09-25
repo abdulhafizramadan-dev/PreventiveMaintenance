@@ -5,5 +5,5 @@ import com.alifalpian.krakatauapp.domain.model.Resource
 
 data class ListMaintenanceTechnicianUiState(
     val equipmentsWillMaintenance: Resource<List<Equipment>> = Resource.Loading,
-    val equipmentsHaveBeenMaintenance: Resource<List<Equipment>> = Resource.Loading,
+    val equipmentsHasBeenMaintenance: Resource<List<Equipment>> = Resource.Loading,
 )

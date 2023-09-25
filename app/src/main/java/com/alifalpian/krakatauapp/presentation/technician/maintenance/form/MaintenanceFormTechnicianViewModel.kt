@@ -1,71 +1,180 @@
 package com.alifalpian.krakatauapp.presentation.technician.maintenance.form
 
 import androidx.lifecycle.ViewModel
-import com.alifalpian.krakatauapp.domain.model.MaintenanceEquipment
+import androidx.lifecycle.viewModelScope
+import com.alifalpian.krakatauapp.domain.model.MaintenanceCheckPoint
+import com.alifalpian.krakatauapp.domain.model.MaintenanceSafetyUse
 import com.alifalpian.krakatauapp.domain.model.MaintenanceTools
-import com.alifalpian.krakatauapp.domain.model.SafetyMaintenance
+import com.alifalpian.krakatauapp.domain.model.Resource
+import com.alifalpian.krakatauapp.domain.usecase.HomeUseCase
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.MutableStateFlow
+import kotlinx.coroutines.launch
 import javax.inject.Inject
 
 @HiltViewModel
-class MaintenanceFormTechnicianViewModel @Inject constructor() : ViewModel() {
+class MaintenanceFormTechnicianViewModel @Inject constructor(
+    private val homeUseCase: HomeUseCase
+) : ViewModel() {
 
     var maintenanceFormTechnicianUiState = MutableStateFlow(MaintenanceFormTechnicianUiState())
         private set
 
-    fun updateMaintenanceFormTechnicianUiState(equipment: MaintenanceEquipment) {
+    fun getEquipment(equipmentId: String) {
+        viewModelScope.launch {
+            homeUseCase.getEquipment(equipmentId).collect { resource ->
+                maintenanceFormTechnicianUiState.value = maintenanceFormTechnicianUiState.value.copy(
+                    equipment = resource
+                )
+            }
+        }
+    }
+
+    fun getUser(uid: String) {
+        viewModelScope.launch {
+            homeUseCase.getUser(uid).collect { resource ->
+                maintenanceFormTechnicianUiState.value = maintenanceFormTechnicianUiState.value.copy(
+                    user = resource
+                )
+            }
+        }
+    }
+
+    fun getMaintenanceHistory(maintenanceHistoryDocumentId: String) {
+        viewModelScope.launch {
+            homeUseCase.getMaintenanceHistory(maintenanceHistoryDocumentId).collect { resource ->
+                maintenanceFormTechnicianUiState.value = maintenanceFormTechnicianUiState.value.copy(
+                    maintenanceHistory = resource
+                )
+            }
+        }
+    }
+
+    fun getMaintenanceCheckPoint(checkPointId: String) {
+        viewModelScope.launch {
+            homeUseCase.getMaintenanceCheckPoint(checkPointId).collect { resource ->
+                maintenanceFormTechnicianUiState.value = maintenanceFormTechnicianUiState.value.copy(
+                    maintenanceCheckPoints = resource
+                )
+            }
+        }
+    }
+
+    fun getMaintenanceCheckPointHistory(checkPointId: String, maintenanceCheckPointHistoryDocumentId: String) {
+        viewModelScope.launch {
+            homeUseCase.getMaintenanceCheckPointHistory(checkPointId, maintenanceCheckPointHistoryDocumentId).collect { resource ->
+                maintenanceFormTechnicianUiState.value = maintenanceFormTechnicianUiState.value.copy(
+                    maintenanceCheckPoints = resource
+                )
+            }
+        }
+    }
+
+    fun getMaintenanceTools(maintenanceHistoryDocumentId: String) {
+        viewModelScope.launch {
+            homeUseCase.getMaintenanceTools(maintenanceHistoryDocumentId).collect { resource ->
+                maintenanceFormTechnicianUiState.value = maintenanceFormTechnicianUiState.value.copy(
+                    maintenanceToolsForm = resource
+                )
+            }
+        }
+    }
+
+    fun getMaintenanceSafetyUse(maintenanceHistoryDocumentId: String) {
+        viewModelScope.launch {
+            homeUseCase.getMaintenanceSafetyUse(maintenanceHistoryDocumentId).collect { resource ->
+                maintenanceFormTechnicianUiState.value = maintenanceFormTechnicianUiState.value.copy(
+                    maintenanceSafetyUseForm = resource
+                )
+            }
+        }
+    }
+
+    fun setMaintenanceToolsFormToMaintenanceState() {
         maintenanceFormTechnicianUiState.value = maintenanceFormTechnicianUiState.value.copy(
-            equipment = equipment
+            maintenanceToolsForm = Resource.Success(emptyList())
         )
+    }
+
+    fun setMaintenanceSafetyUseFormToMaintenanceState() {
+        maintenanceFormTechnicianUiState.value = maintenanceFormTechnicianUiState.value.copy(
+            maintenanceSafetyUseForm = Resource.Success(emptyList())
+        )
+    }
+
+    fun updateMaintenanceCheckPoints(maintenanceCheckPoint: MaintenanceCheckPoint, position: Int) {
+        var maintenanceCheckPoints = maintenanceFormTechnicianUiState.value.maintenanceCheckPoints
+        if (maintenanceCheckPoints is Resource.Success) {
+            val updatedMaintenanceCheckPoints = maintenanceCheckPoints.data.toMutableList()
+            updatedMaintenanceCheckPoints[position] = maintenanceCheckPoint
+            maintenanceCheckPoints = Resource.Success(updatedMaintenanceCheckPoints)
+            maintenanceFormTechnicianUiState.value = maintenanceFormTechnicianUiState.value.copy(
+                maintenanceCheckPoints = maintenanceCheckPoints
+            )
+        }
     }
 
     fun addToolsMaintenanceForm() {
-        val toolsMaintenance = maintenanceFormTechnicianUiState.value.toolsMaintenanceForm.toMutableList()
-        toolsMaintenance.add(MaintenanceTools())
-        maintenanceFormTechnicianUiState.value = maintenanceFormTechnicianUiState.value.copy(
-            toolsMaintenanceForm = toolsMaintenance
-        )
+        val maintenanceToolsFormResource = maintenanceFormTechnicianUiState.value.maintenanceToolsForm
+        if (maintenanceToolsFormResource is Resource.Success) {
+            val maintenanceToolsForm = maintenanceToolsFormResource.data.toMutableList()
+            maintenanceToolsForm.add(MaintenanceTools())
+            maintenanceFormTechnicianUiState.value = maintenanceFormTechnicianUiState.value.copy(
+                maintenanceToolsForm = Resource.Success(maintenanceToolsForm)
+            )
+
+        }
     }
 
     fun addSafetyMaintenanceTools() {
-        val safetyMaintenanceTools = maintenanceFormTechnicianUiState.value.safetyMaintenanceForm.toMutableList()
-        safetyMaintenanceTools.add(SafetyMaintenance())
-        maintenanceFormTechnicianUiState.value = maintenanceFormTechnicianUiState.value.copy(
-            safetyMaintenanceForm = safetyMaintenanceTools
-        )
+        val safetyMaintenanceToolsResource = maintenanceFormTechnicianUiState.value.maintenanceSafetyUseForm
+        if (safetyMaintenanceToolsResource is Resource.Success) {
+            val safetyMaintenanceTools = safetyMaintenanceToolsResource.data.toMutableList()
+            safetyMaintenanceTools.add(MaintenanceSafetyUse())
+            maintenanceFormTechnicianUiState.value = maintenanceFormTechnicianUiState.value.copy(
+                maintenanceSafetyUseForm = Resource.Success(safetyMaintenanceTools)
+            )
+
+        }
     }
 
-    fun removeLastToolsMaintenanceForm() {
-        val toolsMaintenance = maintenanceFormTechnicianUiState.value.toolsMaintenanceForm.toMutableList()
-        toolsMaintenance.removeLast()
-        maintenanceFormTechnicianUiState.value = maintenanceFormTechnicianUiState.value.copy(
-            toolsMaintenanceForm = toolsMaintenance
-        )
-    }
+//    fun removeLastToolsMaintenanceForm() {
+//        val toolsMaintenance = maintenanceFormTechnicianUiState.value.maintenanceToolsForm.toMutableList()
+//        toolsMaintenance.removeLast()
+//        maintenanceFormTechnicianUiState.value = maintenanceFormTechnicianUiState.value.copy(
+//            maintenanceToolsForm = toolsMaintenance
+//        )
+//    }
 
-    fun removeLastSafetyMaintenanceTools() {
-        val safetyMaintenanceTools = maintenanceFormTechnicianUiState.value.safetyMaintenanceForm.toMutableList()
-        safetyMaintenanceTools.removeLast()
-        maintenanceFormTechnicianUiState.value = maintenanceFormTechnicianUiState.value.copy(
-            safetyMaintenanceForm = safetyMaintenanceTools
-        )
-    }
+//    fun removeLastSafetyMaintenanceTools() {
+//        val safetyMaintenanceTools = maintenanceFormTechnicianUiState.value.maintenanceSafetyUseForm.toMutableList()
+//        safetyMaintenanceTools.removeLast()
+//        maintenanceFormTechnicianUiState.value = maintenanceFormTechnicianUiState.value.copy(
+//            maintenanceSafetyUseForm = safetyMaintenanceTools
+//        )
+//    }
 
     fun updateToolsMaintenanceForm(index: Int, maintenanceTools: MaintenanceTools) {
-        val toolsMaintenance = maintenanceFormTechnicianUiState.value.toolsMaintenanceForm.toMutableList()
-        toolsMaintenance[index] = maintenanceTools
-        maintenanceFormTechnicianUiState.value = maintenanceFormTechnicianUiState.value.copy(
-            toolsMaintenanceForm = toolsMaintenance
-        )
+        val maintenanceToolsFormResource = maintenanceFormTechnicianUiState.value.maintenanceToolsForm
+        if (maintenanceToolsFormResource is Resource.Success) {
+            val maintenanceToolsForm = maintenanceToolsFormResource.data.toMutableList()
+            maintenanceToolsForm[index] = maintenanceTools
+            maintenanceFormTechnicianUiState.value = maintenanceFormTechnicianUiState.value.copy(
+                maintenanceToolsForm = Resource.Success(maintenanceToolsForm)
+            )
+        }
     }
 
-    fun updateSafetyMaintenanceForm(index: Int, safetyTools: SafetyMaintenance) {
-        val toolsMaintenance = maintenanceFormTechnicianUiState.value.safetyMaintenanceForm.toMutableList()
-        toolsMaintenance[index] = safetyTools
-        maintenanceFormTechnicianUiState.value = maintenanceFormTechnicianUiState.value.copy(
-            safetyMaintenanceForm = toolsMaintenance
-        )
+    fun updateSafetyMaintenanceForm(index: Int, safetyTools: MaintenanceSafetyUse) {
+        val maintenanceSafetyUseResource = maintenanceFormTechnicianUiState.value.maintenanceSafetyUseForm
+        if (maintenanceSafetyUseResource is Resource.Success) {
+            val maintenanceSafetyUse = maintenanceSafetyUseResource.data.toMutableList()
+            maintenanceSafetyUse[index] = safetyTools
+            maintenanceFormTechnicianUiState.value = maintenanceFormTechnicianUiState.value.copy(
+                maintenanceSafetyUseForm = Resource.Success(maintenanceSafetyUse)
+            )
+
+        }
     }
 
 }

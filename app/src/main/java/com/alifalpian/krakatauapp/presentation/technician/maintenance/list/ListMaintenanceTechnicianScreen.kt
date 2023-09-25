@@ -1,6 +1,5 @@
 package com.alifalpian.krakatauapp.presentation.technician.maintenance.list
 
-import android.util.Log
 import androidx.compose.foundation.ExperimentalFoundationApi
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.PaddingValues
@@ -24,7 +23,6 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
 import com.alifalpian.krakatauapp.domain.model.Equipment
-import com.alifalpian.krakatauapp.domain.model.MaintenanceEquipment
 import com.alifalpian.krakatauapp.domain.model.Resource
 import com.alifalpian.krakatauapp.presentation.destinations.MaintenanceFormTechnicianScreenDestination
 import com.alifalpian.krakatauapp.presentation.destinations.StartQuestionMaintenanceScreenDestination
@@ -40,7 +38,7 @@ import com.ramcosta.composedestinations.navigation.EmptyDestinationsNavigator
 
 private const val TAG = "ListMaintenanceTechnici"
 
-@RootNavGraph(start = true)
+//@RootNavGraph(start = true)
 @Destination
 @ExperimentalFoundationApi
 @ExperimentalMaterial3Api
@@ -60,32 +58,19 @@ fun ListMaintenanceTechnicianScreen(
 
     val listMaintenanceTechnicianUiState by listMaintenanceTechnicianViewModel.listMaintenanceTechnicianUiState.collectAsState()
     val equipmentsWillMaintenance = listMaintenanceTechnicianUiState.equipmentsWillMaintenance
+    val equipmentsHasBeenMaintenance = listMaintenanceTechnicianUiState.equipmentsHasBeenMaintenance
 
     LaunchedEffect(key1 = Unit) {
-        listMaintenanceTechnicianViewModel.getEquipmentsWillBeMaintenance("E1jlNeppUxgSxnw9Rh7XYx0cWO93")
-    }
-
-    LaunchedEffect(key1 = equipmentsWillMaintenance) {
-        when (equipmentsWillMaintenance) {
-            Resource.Idling -> {}
-            Resource.Loading -> Log.d(TAG, "ListMaintenanceTechnicianScreen: Loading...")
-            is Resource.Error -> Log.d(
-                TAG,
-                "ListMaintenanceTechnicianScreen: Error = ${equipmentsWillMaintenance.error}"
-            )
-            is Resource.Success -> Log.d(
-                TAG,
-                "ListMaintenanceTechnicianScreen: Success = ${equipmentsWillMaintenance.data}"
-            )
-        }
+        listMaintenanceTechnicianViewModel.getEquipmentsWillBeMaintenance("NMafmmi08rDryW2jzMGY")
+        listMaintenanceTechnicianViewModel.getEquipmentsHasBeenMaintenance("NMafmmi08rDryW2jzMGY")
     }
 
     val onAllMaintenanceEquipmentClicked: (Equipment) -> Unit = {
-        navigator.navigate(StartQuestionMaintenanceScreenDestination())
+        navigator.navigate(StartQuestionMaintenanceScreenDestination(it.documentId))
     }
 
     val onFinishedMaintenanceEquipmentClicked: (Equipment) -> Unit = {
-        navigator.navigate(MaintenanceFormTechnicianScreenDestination(status = MaintenanceFormTechnicianScreenStatus.Finish))
+        navigator.navigate(MaintenanceFormTechnicianScreenDestination(status = MaintenanceFormTechnicianScreenStatus.History, equipmentDocumentId = it.maintenanceHistoryDocumentId))
     }
 
     Scaffold(
@@ -102,20 +87,20 @@ fun ListMaintenanceTechnicianScreen(
     ) { paddingValues ->
         HorizontalPager(
             state = pagerState,
+            verticalAlignment = Alignment.Top,
             modifier = Modifier
                 .padding(paddingValues)
-                .fillMaxSize(),
-            verticalAlignment = Alignment.Top
+                .fillMaxSize()
         ) { page ->
             when (page) {
                 0 -> ListMaintenanceTechnicianContent(
                     equipments = equipmentsWillMaintenance,
-                    onEquipmentClicked = {}
+                    onEquipmentClicked = onAllMaintenanceEquipmentClicked
                 )
-//                1 -> ListMaintenanceTechnicianContent(
-//                    equipments = dummyMaintenanceEquipments,
-//                    onEquipmentClicked = onFinishedMaintenanceEquipmentClicked
-//                )
+                1 -> ListMaintenanceTechnicianContent(
+                    equipments = equipmentsHasBeenMaintenance,
+                    onEquipmentClicked = onFinishedMaintenanceEquipmentClicked
+                )
             }
         }
     }

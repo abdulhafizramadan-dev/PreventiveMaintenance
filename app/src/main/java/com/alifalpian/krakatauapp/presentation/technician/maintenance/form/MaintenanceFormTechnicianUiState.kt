@@ -1,13 +1,18 @@
 package com.alifalpian.krakatauapp.presentation.technician.maintenance.form
 
-import com.alifalpian.krakatauapp.domain.model.MaintenanceEquipment
+import com.alifalpian.krakatauapp.domain.model.Equipment
+import com.alifalpian.krakatauapp.domain.model.MaintenanceCheckPoint
+import com.alifalpian.krakatauapp.domain.model.MaintenanceHistory
 import com.alifalpian.krakatauapp.domain.model.MaintenanceTools
-import com.alifalpian.krakatauapp.domain.model.PreventiveCheckList
-import com.alifalpian.krakatauapp.domain.model.SafetyMaintenance
+import com.alifalpian.krakatauapp.domain.model.Resource
+import com.alifalpian.krakatauapp.domain.model.MaintenanceSafetyUse
+import com.alifalpian.krakatauapp.domain.model.User
 
 data class MaintenanceFormTechnicianUiState(
-    val equipment: MaintenanceEquipment? = null,
-    val preventiveCheckList: List<PreventiveCheckList> = emptyList(),
-    val toolsMaintenanceForm: List<MaintenanceTools> = emptyList(),
-    val safetyMaintenanceForm: List<SafetyMaintenance> = emptyList()
+    val equipment: Resource<Equipment> = Resource.Loading,
+    val user: Resource<User> = Resource.Loading,
+    val maintenanceHistory: Resource<MaintenanceHistory> = Resource.Loading,
+    val maintenanceCheckPoints: Resource<List<MaintenanceCheckPoint>> = Resource.Loading,
+    val maintenanceToolsForm: Resource<List<MaintenanceTools>> = Resource.Loading,
+    val maintenanceSafetyUseForm: Resource<List<MaintenanceSafetyUse>> = Resource.Loading
 )

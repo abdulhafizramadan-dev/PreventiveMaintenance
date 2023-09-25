@@ -31,14 +31,6 @@ fun DashboardEmployeeScreen(
     modifier: Modifier = Modifier,
     navigator: DestinationsNavigator = EmptyDestinationsNavigator
 ) {
-    val user = User(
-        id = "user123",
-        type = "Karyawan",
-        photo = "",
-        name = "Alif Alpian Sahrul Muharom",
-        division = "Karyawan Divisi SIMK",
-        nik = "170904201027"
-    )
     val equipments = (1..10).map {
         EmployeeDashboardEquipment(
             id = it.toString(),

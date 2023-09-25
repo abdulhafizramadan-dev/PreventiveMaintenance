@@ -11,5 +11,8 @@ data class Equipment(
     val location: String = emptyString(),
     val description: String = emptyString(),
     val type: String = emptyString(),
+    val maintenanceCheckPointType: String = emptyString(),
     val uid: String = emptyString(),
-)
+) {
+    var maintenanceHistoryDocumentId: String = emptyString()
+}

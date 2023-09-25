@@ -7,7 +7,7 @@ enum class UserType {
 }
 
 data class User(
-    val id: String = emptyString(),
+    val documentId: String = emptyString(),
     val type: String = emptyString(),
     val photo: String = emptyString(),
     val name: String = emptyString(),

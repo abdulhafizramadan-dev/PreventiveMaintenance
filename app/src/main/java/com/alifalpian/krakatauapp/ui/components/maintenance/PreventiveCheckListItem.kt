@@ -16,13 +16,13 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
-import com.alifalpian.krakatauapp.domain.model.PreventiveCheckList
+import com.alifalpian.krakatauapp.domain.model.MaintenanceCheckPoint
 import com.alifalpian.krakatauapp.ui.theme.PreventiveMaintenanceTheme
 
 @Composable
 fun PreventiveCheckListItem(
     modifier: Modifier = Modifier,
-    item: PreventiveCheckList,
+    item: MaintenanceCheckPoint,
     onCheckedChange: (Boolean) -> Unit,
     enabled: Boolean = true
 ) {
@@ -51,7 +51,7 @@ fun PreventiveCheckListItem(
 fun PreviewPreventiveCheckListItem() {
     PreventiveMaintenanceTheme {
         Surface {
-            val item = PreventiveCheckList(
+            val item = MaintenanceCheckPoint(
                 text = "Periksa komponen komputer pastikan tidak ada kerusakan",
                 id = "fwefw"
             )

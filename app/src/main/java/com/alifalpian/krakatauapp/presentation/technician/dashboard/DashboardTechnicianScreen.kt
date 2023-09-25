@@ -20,13 +20,10 @@ import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
 import com.alifalpian.krakatauapp.domain.model.Resource
 import com.alifalpian.krakatauapp.domain.model.TechnicianDashboardEquipment
-import com.alifalpian.krakatauapp.domain.model.User
-import com.alifalpian.krakatauapp.presentation.destinations.LoginScreenDestination
 import com.alifalpian.krakatauapp.ui.components.dashboard.DashboardTechnicianEquipmentItem
 import com.alifalpian.krakatauapp.ui.components.krakatau.KrakatauDashboardTopAppBar
 import com.alifalpian.krakatauapp.ui.theme.PreventiveMaintenanceTheme
 import com.ramcosta.composedestinations.annotation.Destination
-import com.ramcosta.composedestinations.annotation.RootNavGraph
 import com.ramcosta.composedestinations.navigation.DestinationsNavigator
 import com.ramcosta.composedestinations.navigation.EmptyDestinationsNavigator
 
@@ -49,7 +46,12 @@ fun DashboardTechnicianScreen(
 
     LaunchedEffect(key1 = Unit) {
         dashboardTechnicianViewModel.getUser(uid)
-        dashboardTechnicianViewModel.getTechnicianDashboardEquipments(uid)
+    }
+
+    LaunchedEffect(key1 = user) {
+        if (user is Resource.Success) {
+            dashboardTechnicianViewModel.getTechnicianDashboardEquipments(user.data.documentId)
+        }
     }
 
     Scaffold(
