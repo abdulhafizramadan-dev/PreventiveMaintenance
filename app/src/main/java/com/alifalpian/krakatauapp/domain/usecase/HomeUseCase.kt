@@ -35,4 +35,14 @@ interface HomeUseCase {
 
     fun getMaintenanceSafetyUse(maintenanceHistoryDocumentId: String): Flow<Resource<List<MaintenanceSafetyUse>>>
 
+    fun submitMaintenance(
+        equipmentDocumentId: String,
+        maintenanceCheckPointType: String,
+        technicianDocumentId: String,
+        equipmentType: String,
+        maintenanceCheckPoints: List<MaintenanceCheckPoint>,
+        maintenanceTools: List<MaintenanceTools>,
+        maintenanceSafetyUse: List<MaintenanceSafetyUse>
+    ): Flow<Resource<String>>
+
 }

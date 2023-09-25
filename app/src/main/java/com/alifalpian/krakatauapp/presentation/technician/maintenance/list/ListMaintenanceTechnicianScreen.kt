@@ -70,7 +70,11 @@ fun ListMaintenanceTechnicianScreen(
     }
 
     val onFinishedMaintenanceEquipmentClicked: (Equipment) -> Unit = {
-        navigator.navigate(MaintenanceFormTechnicianScreenDestination(status = MaintenanceFormTechnicianScreenStatus.History, equipmentDocumentId = it.maintenanceHistoryDocumentId))
+        navigator.navigate(MaintenanceFormTechnicianScreenDestination(
+            status = MaintenanceFormTechnicianScreenStatus.History,
+            equipmentDocumentId = it.maintenanceHistoryDocumentId,
+            maintenanceHistoryDocumentId = it.maintenanceHistoryDocumentId
+        ))
     }
 
     Scaffold(

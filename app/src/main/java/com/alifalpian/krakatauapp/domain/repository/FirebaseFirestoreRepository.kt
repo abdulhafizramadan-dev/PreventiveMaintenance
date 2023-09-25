@@ -36,8 +36,10 @@ interface FirebaseFirestoreRepository {
         equipmentDocumentId: String,
         maintenanceCheckPointType: String,
         technicianDocumentId: String,
-        type: String,
-        maintenanceCheckPoints: List<MaintenanceCheckPoint> = emptyList(),
-    )
+        equipmentType: String,
+        maintenanceCheckPoints: List<MaintenanceCheckPoint>,
+        maintenanceTools: List<MaintenanceTools>,
+        maintenanceSafetyUse: List<MaintenanceSafetyUse>
+    ): Flow<Resource<String>>
 
 }

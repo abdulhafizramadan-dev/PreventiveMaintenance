@@ -65,4 +65,24 @@ class HomeInteractor @Inject constructor(
     override fun getMaintenanceSafetyUse(maintenanceHistoryDocumentId: String): Flow<Resource<List<MaintenanceSafetyUse>>> {
         return firebaseFirestoreRepository.getMaintenanceSafetyUse(maintenanceHistoryDocumentId)
     }
+
+    override fun submitMaintenance(
+        equipmentDocumentId: String,
+        maintenanceCheckPointType: String,
+        technicianDocumentId: String,
+        equipmentType: String,
+        maintenanceCheckPoints: List<MaintenanceCheckPoint>,
+        maintenanceTools: List<MaintenanceTools>,
+        maintenanceSafetyUse: List<MaintenanceSafetyUse>
+    ): Flow<Resource<String>> {
+        return firebaseFirestoreRepository.submitMaintenance(
+            equipmentDocumentId = equipmentDocumentId,
+            maintenanceCheckPointType = maintenanceCheckPointType,
+            technicianDocumentId = technicianDocumentId,
+            equipmentType = equipmentType,
+            maintenanceCheckPoints = maintenanceCheckPoints,
+            maintenanceTools = maintenanceTools,
+            maintenanceSafetyUse = maintenanceSafetyUse
+        )
+    }
 }

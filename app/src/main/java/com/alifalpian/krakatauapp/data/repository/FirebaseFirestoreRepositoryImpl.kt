@@ -10,8 +10,8 @@ import com.alifalpian.krakatauapp.domain.model.TechnicianDashboardEquipment
 import com.alifalpian.krakatauapp.domain.model.User
 import com.alifalpian.krakatauapp.domain.repository.FirebaseFirestoreRepository
 import com.alifalpian.krakatauapp.util.emptyString
+import com.google.firebase.firestore.FieldValue
 import com.google.firebase.firestore.FirebaseFirestore
-import com.google.firebase.firestore.ktx.toObject
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.catch
@@ -239,9 +239,54 @@ class FirebaseFirestoreRepositoryImpl @Inject constructor(
         equipmentDocumentId: String,
         maintenanceCheckPointType: String,
         technicianDocumentId: String,
-        type: String,
-        maintenanceCheckPoints: List<MaintenanceCheckPoint>
-    ) {
+        equipmentType: String,
+        maintenanceCheckPoints: List<MaintenanceCheckPoint>,
+        maintenanceTools: List<MaintenanceTools>,
+        maintenanceSafetyUse: List<MaintenanceSafetyUse>
+    ): Flow<Resource<String>> = flow<Resource<String>> {
 
+        emit(Resource.Loading)
+
+        val maintenanceCheckPointsMap = hashMapOf("maintenance_check_point_history" to maintenanceCheckPoints.map { it.isChecked })
+        val maintenanceCheckpointsResponse = firestore.collection("maintenance_check_point_history")
+            .add(maintenanceCheckPointsMap).await()
+        val maintenanceCheckpointDocumentId = maintenanceCheckpointsResponse.id
+
+        val maintenanceHistoryMap = hashMapOf(
+            "date" to FieldValue.serverTimestamp(),
+            "equipment_document_id" to equipmentDocumentId,
+            "maintenance_check_point" to maintenanceCheckPointType,
+            "maintenance_check_point_history_document_id" to maintenanceCheckpointDocumentId,
+            "technician_document_id" to technicianDocumentId,
+            "type" to equipmentType
+        )
+        val maintenanceHistoryResponse = firestore.collection("maintenance_history")
+            .add(maintenanceHistoryMap).await()
+        val maintenanceHistoryDocumentId = maintenanceHistoryResponse.id
+
+        val maintenanceToolsMap = maintenanceTools.map {
+            hashMapOf(
+                "description" to it.description,
+                "maintenance_history_document_id" to maintenanceHistoryDocumentId,
+                "quantity" to it.quantity,
+                "unit_of_measurement" to it.unitOfMeasurement
+            )
+        }
+        firestore.collection("maintenance_tools")
+            .add(maintenanceToolsMap).await()
+
+        val maintenanceSafetyUseMap = maintenanceTools.map {
+            hashMapOf(
+                "description" to it.description,
+                "maintenance_history_document_id" to maintenanceHistoryDocumentId,
+                "quantity" to it.quantity,
+                "unit_of_measurement" to it.unitOfMeasurement
+            )
+        }
+        firestore.collection("maintenance_safety_use")
+            .add(maintenanceSafetyUseMap).await()
+    }.catch {
+        emit(Resource.Error(it.message))
     }
+
 }

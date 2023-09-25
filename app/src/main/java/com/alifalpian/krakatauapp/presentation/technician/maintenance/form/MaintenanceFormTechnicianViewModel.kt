@@ -90,6 +90,30 @@ class MaintenanceFormTechnicianViewModel @Inject constructor(
         }
     }
 
+    fun submitMaintenance(
+        equipmentDocumentId: String,
+        maintenanceCheckPointType: String,
+        technicianDocumentId: String,
+        equipmentType: String,
+        maintenanceCheckPoints: List<MaintenanceCheckPoint>,
+        maintenanceTools: List<MaintenanceTools>,
+        maintenanceSafetyUse: List<MaintenanceSafetyUse>
+    ) {
+        viewModelScope.launch {
+            homeUseCase.submitMaintenance(
+                equipmentDocumentId = equipmentDocumentId,
+                maintenanceCheckPointType = maintenanceCheckPointType,
+                technicianDocumentId = technicianDocumentId,
+                equipmentType = equipmentType,
+                maintenanceCheckPoints = maintenanceCheckPoints,
+                maintenanceTools = maintenanceTools,
+                maintenanceSafetyUse = maintenanceSafetyUse
+            ).collect { resource ->
+
+            }
+        }
+    }
+
     fun setMaintenanceToolsFormToMaintenanceState() {
         maintenanceFormTechnicianUiState.value = maintenanceFormTechnicianUiState.value.copy(
             maintenanceToolsForm = Resource.Success(emptyList())
