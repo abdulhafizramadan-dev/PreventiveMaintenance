@@ -32,6 +32,7 @@ import com.alifalpian.krakatauapp.domain.model.User
 import com.alifalpian.krakatauapp.domain.model.UserType
 import com.alifalpian.krakatauapp.presentation.destinations.HomeEmployeeScreenDestination
 import com.alifalpian.krakatauapp.presentation.destinations.HomeTechnicianScreenDestination
+import com.alifalpian.krakatauapp.presentation.destinations.LoginScreenDestination
 import com.alifalpian.krakatauapp.ui.components.krakatau.KrakatauButton
 import com.alifalpian.krakatauapp.ui.components.krakatau.KrakatauOutlinedTextField
 import com.alifalpian.krakatauapp.ui.components.krakatau.KrakatauOutlinedTextFieldType
@@ -49,7 +50,7 @@ import com.ramcosta.composedestinations.navigation.EmptyDestinationsNavigator
 private const val TAG = "LoginScreen"
 
 @ExperimentalFoundationApi
-@RootNavGraph(start = true)
+//@RootNavGraph(start = true)
 @Destination
 @ExperimentalMaterial3Api
 @Composable
@@ -75,9 +76,17 @@ fun LoginScreen(
 
     val navigateToHomeScreen: (User) -> Unit = { user ->
         if (user.type.contains("teknisi", true)) {
-            navigator.navigate(HomeTechnicianScreenDestination())
+            navigator.navigate(HomeTechnicianScreenDestination()) {
+                popUpTo(LoginScreenDestination.route) {
+                    inclusive = true
+                }
+            }
         } else {
-            navigator.navigate(HomeEmployeeScreenDestination())
+            navigator.navigate(HomeEmployeeScreenDestination()) {
+                popUpTo(LoginScreenDestination.route) {
+                    inclusive = true
+                }
+            }
         }
     }
 

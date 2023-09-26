@@ -42,7 +42,8 @@ interface HomeUseCase {
         equipmentType: String,
         maintenanceCheckPoints: List<MaintenanceCheckPoint>,
         maintenanceTools: List<MaintenanceTools>,
-        maintenanceSafetyUse: List<MaintenanceSafetyUse>
+        maintenanceSafetyUse: List<MaintenanceSafetyUse>,
+        equipmentWillMaintenanceDocumentId: String
     ): Flow<Resource<String>>
 
 }

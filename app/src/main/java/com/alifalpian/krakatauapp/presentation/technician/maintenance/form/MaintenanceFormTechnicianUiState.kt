@@ -11,8 +11,10 @@ import com.alifalpian.krakatauapp.domain.model.User
 data class MaintenanceFormTechnicianUiState(
     val equipment: Resource<Equipment> = Resource.Loading,
     val user: Resource<User> = Resource.Loading,
+    val technician: Resource<User> = Resource.Loading,
     val maintenanceHistory: Resource<MaintenanceHistory> = Resource.Loading,
     val maintenanceCheckPoints: Resource<List<MaintenanceCheckPoint>> = Resource.Loading,
     val maintenanceToolsForm: Resource<List<MaintenanceTools>> = Resource.Loading,
-    val maintenanceSafetyUseForm: Resource<List<MaintenanceSafetyUse>> = Resource.Loading
+    val maintenanceSafetyUseForm: Resource<List<MaintenanceSafetyUse>> = Resource.Loading,
+    val submitMaintenance: Resource<String> = Resource.Idling
 )

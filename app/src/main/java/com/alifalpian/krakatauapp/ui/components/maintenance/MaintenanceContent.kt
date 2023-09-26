@@ -147,7 +147,6 @@ fun PreviewMaintenanceContent() {
                 Equipment(
                     documentId = "12319814917",
                     equipment = "2210043175",
-                    date = "09/12/2023",
                     interval = "4 MON",
                     execution = "PG IT",
                     location = "Ruang Staff SEKPER (WTP)",

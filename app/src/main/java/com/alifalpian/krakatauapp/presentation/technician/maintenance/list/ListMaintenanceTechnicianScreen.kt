@@ -16,6 +16,7 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
+import androidx.compose.runtime.remember
 import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
@@ -27,18 +28,25 @@ import com.alifalpian.krakatauapp.domain.model.Resource
 import com.alifalpian.krakatauapp.presentation.destinations.MaintenanceFormTechnicianScreenDestination
 import com.alifalpian.krakatauapp.presentation.destinations.StartQuestionMaintenanceScreenDestination
 import com.alifalpian.krakatauapp.presentation.technician.maintenance.form.MaintenanceFormTechnicianScreenStatus
+import com.alifalpian.krakatauapp.ui.components.HistoryDateFilter
 import com.alifalpian.krakatauapp.ui.components.krakatau.KrakatauTopAppBarWithTabRow
 import com.alifalpian.krakatauapp.ui.components.maintenance.MaintenanceTechnicianItem
 import com.alifalpian.krakatauapp.ui.components.maintenance.ShimmerMaintenanceTechnicianItem
 import com.alifalpian.krakatauapp.ui.theme.PreventiveMaintenanceTheme
+import com.maxkeppeker.sheets.core.models.base.rememberUseCaseState
+import com.maxkeppeler.sheets.calendar.CalendarDialog
+import com.maxkeppeler.sheets.calendar.models.CalendarConfig
+import com.maxkeppeler.sheets.calendar.models.CalendarSelection
+import com.maxkeppeler.sheets.calendar.models.CalendarStyle
 import com.ramcosta.composedestinations.annotation.Destination
 import com.ramcosta.composedestinations.annotation.RootNavGraph
 import com.ramcosta.composedestinations.navigation.DestinationsNavigator
 import com.ramcosta.composedestinations.navigation.EmptyDestinationsNavigator
+import java.time.LocalDate
 
 private const val TAG = "ListMaintenanceTechnici"
 
-//@RootNavGraph(start = true)
+@RootNavGraph(start = true)
 @Destination
 @ExperimentalFoundationApi
 @ExperimentalMaterial3Api
@@ -60,13 +68,24 @@ fun ListMaintenanceTechnicianScreen(
     val equipmentsWillMaintenance = listMaintenanceTechnicianUiState.equipmentsWillMaintenance
     val equipmentsHasBeenMaintenance = listMaintenanceTechnicianUiState.equipmentsHasBeenMaintenance
 
+    val calendarDialogUseCase = rememberUseCaseState()
+    val showCalendar: () -> Unit = { calendarDialogUseCase.show() }
+
+    val technicianDocumentId = remember {
+        "NMafmmi08rDryW2jzMGY"
+    }
+
     LaunchedEffect(key1 = Unit) {
-        listMaintenanceTechnicianViewModel.getEquipmentsWillBeMaintenance("NMafmmi08rDryW2jzMGY")
-        listMaintenanceTechnicianViewModel.getEquipmentsHasBeenMaintenance("NMafmmi08rDryW2jzMGY")
+        listMaintenanceTechnicianViewModel.getEquipmentsWillBeMaintenance(technicianDocumentId)
+        listMaintenanceTechnicianViewModel.getEquipmentsHasBeenMaintenance(technicianDocumentId)
     }
 
     val onAllMaintenanceEquipmentClicked: (Equipment) -> Unit = {
-        navigator.navigate(StartQuestionMaintenanceScreenDestination(it.documentId))
+        navigator.navigate(StartQuestionMaintenanceScreenDestination(
+            equipmentDocumentId = it.documentId,
+            technicianDocumentId = technicianDocumentId,
+            equipmentWillMaintenanceDocumentId = it.equipmentWillMaintenanceDocumentId
+        ))
     }
 
     val onFinishedMaintenanceEquipmentClicked: (Equipment) -> Unit = {
@@ -76,6 +95,18 @@ fun ListMaintenanceTechnicianScreen(
             maintenanceHistoryDocumentId = it.maintenanceHistoryDocumentId
         ))
     }
+
+    CalendarDialog(
+        state = calendarDialogUseCase,
+        config = CalendarConfig(
+            yearSelection = true,
+            monthSelection = true,
+            style = CalendarStyle.MONTH,
+        ),
+        selection = CalendarSelection.Period { startDate, endDate ->
+
+        }
+    )
 
     Scaffold(
         topBar = {
@@ -97,13 +128,14 @@ fun ListMaintenanceTechnicianScreen(
                 .fillMaxSize()
         ) { page ->
             when (page) {
-                0 -> ListMaintenanceTechnicianContent(
+                0 -> ListEquipmentWillMaintenance(
                     equipments = equipmentsWillMaintenance,
                     onEquipmentClicked = onAllMaintenanceEquipmentClicked
                 )
-                1 -> ListMaintenanceTechnicianContent(
+                1 -> ListEquipmentHasBeenMaintenance(
                     equipments = equipmentsHasBeenMaintenance,
-                    onEquipmentClicked = onFinishedMaintenanceEquipmentClicked
+                    onEquipmentClicked = onFinishedMaintenanceEquipmentClicked,
+                    onFilterIconClicked = showCalendar
                 )
             }
         }
@@ -111,7 +143,7 @@ fun ListMaintenanceTechnicianScreen(
 }
 
 @Composable
-private fun ListMaintenanceTechnicianContent(
+private fun ListEquipmentWillMaintenance(
     modifier: Modifier = Modifier,
     equipments: Resource<List<Equipment>>,
     onEquipmentClicked: (Equipment) -> Unit = {}
@@ -127,7 +159,42 @@ private fun ListMaintenanceTechnicianContent(
             }
         }
         if (equipments is Resource.Success) {
-            items(items = equipments.data, key = { it.documentId }) { equipment ->
+            items(items = equipments.data, key = { it.equipmentWillMaintenanceDocumentId }) { equipment ->
+                MaintenanceTechnicianItem(
+                    equipment = equipment,
+                    onClicked = onEquipmentClicked
+                )
+            }
+        }
+    }
+}
+
+@ExperimentalFoundationApi
+@Composable
+private fun ListEquipmentHasBeenMaintenance(
+    modifier: Modifier = Modifier,
+    equipments: Resource<List<Equipment>>,
+    onEquipmentClicked: (Equipment) -> Unit = {},
+    onFilterIconClicked: () -> Unit = {}
+) {
+    LazyColumn(
+        modifier = modifier,
+        contentPadding = PaddingValues(all = 12.dp),
+        verticalArrangement = Arrangement.spacedBy(10.dp)
+    ) {
+        stickyHeader {
+            HistoryDateFilter(
+                date = LocalDate.now(),
+                onFilterIconClicked = onFilterIconClicked
+            )
+        }
+        if (equipments is Resource.Loading) {
+            items(10) {
+                ShimmerMaintenanceTechnicianItem()
+            }
+        }
+        if (equipments is Resource.Success) {
+            items(items = equipments.data, key = { it.maintenanceHistoryDocumentId }) { equipment ->
                 MaintenanceTechnicianItem(
                     equipment = equipment,
                     onClicked = onEquipmentClicked

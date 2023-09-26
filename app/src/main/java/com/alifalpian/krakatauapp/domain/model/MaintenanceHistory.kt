@@ -1,13 +1,15 @@
 package com.alifalpian.krakatauapp.domain.model
 
 import com.alifalpian.krakatauapp.util.emptyString
+import java.util.Date
 
 data class MaintenanceHistory(
     val documentId: String = emptyString(),
     val technicianDocumentId: String = emptyString(),
     val maintenanceCheckPoint: String = emptyString(),
-    val type: String = emptyString(),
+    val equipmentType: String = emptyString(),
     val equipmentDocumentId: String = emptyString(),
-    val date: String = emptyString(),
+    val date: Date = Date(),
     val maintenanceCheckPointHistoryDocumentId: String = emptyString(),
+    val status: String = emptyString(),
 )

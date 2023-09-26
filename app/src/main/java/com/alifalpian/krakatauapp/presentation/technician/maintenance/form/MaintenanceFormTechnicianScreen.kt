@@ -15,10 +15,12 @@ import androidx.compose.material3.Divider
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Surface
+import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.ui.Alignment
@@ -26,10 +28,13 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
+import androidx.compose.ui.window.DialogProperties
 import androidx.hilt.navigation.compose.hiltViewModel
 import com.alifalpian.krakatauapp.domain.model.MaintenanceTools
 import com.alifalpian.krakatauapp.domain.model.Resource
 import com.alifalpian.krakatauapp.domain.model.MaintenanceSafetyUse
+import com.alifalpian.krakatauapp.presentation.destinations.HomeTechnicianScreenDestination
+import com.alifalpian.krakatauapp.presentation.destinations.MaintenanceFormTechnicianScreenDestination
 import com.alifalpian.krakatauapp.ui.components.krakatau.KrakatauButton
 import com.alifalpian.krakatauapp.ui.components.krakatau.KrakatauTabRow
 import com.alifalpian.krakatauapp.ui.components.krakatau.KrakatauTopAppBar
@@ -42,6 +47,11 @@ import com.alifalpian.krakatauapp.ui.components.maintenance.MaintenanceSafetyUse
 import com.alifalpian.krakatauapp.ui.components.maintenance.MaintenanceToolsForm
 import com.alifalpian.krakatauapp.ui.components.maintenance.MaintenanceToolsFormType
 import com.alifalpian.krakatauapp.ui.theme.PreventiveMaintenanceTheme
+import com.alifalpian.krakatauapp.util.emptyString
+import com.maxkeppeker.sheets.core.CoreDialog
+import com.maxkeppeker.sheets.core.models.CoreSelection
+import com.maxkeppeker.sheets.core.models.base.SelectionButton
+import com.maxkeppeker.sheets.core.models.base.rememberUseCaseState
 import com.ramcosta.composedestinations.annotation.Destination
 import com.ramcosta.composedestinations.annotation.RootNavGraph
 import com.ramcosta.composedestinations.navigation.DestinationsNavigator
@@ -65,7 +75,10 @@ fun MaintenanceFormTechnicianScreen(
     viewModel: MaintenanceFormTechnicianViewModel = hiltViewModel(),
     equipmentDocumentId: String = "T0TvZy3pnDDkFWvH22R7",
     maintenanceHistoryDocumentId: String = "p8j0Twj0rlXvB69SJGLe",
+    equipmentWillMaintenanceDocumentId: String = emptyString(),
+    technicianDocumentId: String = "NMafmmi08rDryW2jzMGY"
 ) {
+    
     val maintenanceFormTechnicianUiState by viewModel.maintenanceFormTechnicianUiState.collectAsState()
     val equipment = maintenanceFormTechnicianUiState.equipment
     val user = maintenanceFormTechnicianUiState.user
@@ -73,6 +86,13 @@ fun MaintenanceFormTechnicianScreen(
     val maintenanceCheckPoints = maintenanceFormTechnicianUiState.maintenanceCheckPoints
     val maintenanceToolsForm = maintenanceFormTechnicianUiState.maintenanceToolsForm
     val maintenanceSafetyUseForm = maintenanceFormTechnicianUiState.maintenanceSafetyUseForm
+    val submitMaintenance = maintenanceFormTechnicianUiState.submitMaintenance
+
+    val buttonSubmitLoadingState by viewModel.buttonSubmitLoadingState.collectAsState(initial = false)
+
+    val confirmationSubmitMaintenanceFormDialogUseCase = rememberUseCaseState()
+    val successSubmitMaintenanceFormDialogUseCase = rememberUseCaseState()
+    val failedSubmitMaintenanceFormDialogUseCase = rememberUseCaseState()
 
     val tabPages = listOf(
         "Tools/Alat", "Penggunaan Safety"
@@ -122,20 +142,14 @@ fun MaintenanceFormTechnicianScreen(
         }
     }
 
-//    LaunchedEffect(key1 = user) {
-//        when (user) {
-//            Resource.Idling -> {}
-//            Resource.Loading -> Log.d(TAG, "MaintenanceFormTechnicianScreen: Loading...")
-//            is Resource.Error -> Log.d(
-//                TAG,
-//                "MaintenanceFormTechnicianScreen: Error = ${user.error}"
-//            )
-//            is Resource.Success -> Log.d(
-//                TAG,
-//                "MaintenanceFormTechnicianScreen: Success = ${user.data}"
-//            )
-//        }
-//    }
+    LaunchedEffect(key1 = submitMaintenance) {
+        if (submitMaintenance is Resource.Success) {
+            successSubmitMaintenanceFormDialogUseCase.show()
+        }
+        if (submitMaintenance is Resource.Error) {
+            failedSubmitMaintenanceFormDialogUseCase.show()
+        }
+    }
 
     val onNavigationIconClicked: () -> Unit = {
         navigator.navigateUp()
@@ -156,6 +170,75 @@ fun MaintenanceFormTechnicianScreen(
     val onSafetyMaintenanceFormChanged: (Int, MaintenanceSafetyUse) -> Unit = { index, tools ->
         viewModel.updateSafetyMaintenanceForm(index = index, safetyTools = tools)
     }
+
+    val submitMaintenanceForm: () -> Unit = {
+        if (
+            equipment is Resource.Success &&
+            user is Resource.Success &&
+            maintenanceCheckPoints is Resource.Success &&
+            maintenanceToolsForm is Resource.Success &&
+            maintenanceSafetyUseForm is Resource.Success
+        ) {
+            viewModel.submitMaintenance(
+                equipmentDocumentId = equipment.data.documentId,
+                maintenanceCheckPointType = equipment.data.type,
+                technicianDocumentId = technicianDocumentId,
+                equipmentType = equipment.data.type,
+                maintenanceCheckPoints = maintenanceCheckPoints.data,
+                maintenanceTools = maintenanceToolsForm.data.filter { it.description.isNotEmpty() },
+                maintenanceSafetyUse = maintenanceSafetyUseForm.data.filter { it.description.isNotEmpty() },
+                equipmentWillMaintenanceDocumentId = equipmentWillMaintenanceDocumentId
+            )
+        }
+    }
+
+    val navigateBackToHomeScreen: () -> Unit = {
+        navigator.navigate(HomeTechnicianScreenDestination()) {
+            popUpTo(HomeTechnicianScreenDestination.route) {
+                inclusive = true
+            }
+        }
+    }
+
+    val onSubmitButtonClicked: () -> Unit = {
+        confirmationSubmitMaintenanceFormDialogUseCase.show()
+    }
+
+    CoreDialog(
+        state = confirmationSubmitMaintenanceFormDialogUseCase,
+        selection = CoreSelection(
+            positiveButton = SelectionButton(text = "Submit"),
+            onPositiveClick = submitMaintenanceForm,
+            negativeButton = SelectionButton("Kembali"),
+            onNegativeClick = { confirmationSubmitMaintenanceFormDialogUseCase.finish() }
+        ),
+        body = { Text(text = "Apakah kamu yakin ingin mengsubmit hasil maintenance?") }
+    )
+
+    CoreDialog(
+        state = successSubmitMaintenanceFormDialogUseCase,
+        selection = CoreSelection(
+            positiveButton = SelectionButton(text = "Kembali"),
+            onPositiveClick = navigateBackToHomeScreen,
+            negativeButton = null
+        ),
+        body = { Text(text = "Maintenance berhasil disubmit!") },
+        properties = DialogProperties(
+            dismissOnBackPress = false,
+            dismissOnClickOutside = false
+        )
+    )
+
+    CoreDialog(
+        state = failedSubmitMaintenanceFormDialogUseCase,
+        selection = CoreSelection(
+            positiveButton = SelectionButton(text = "Coba lagi"),
+            onPositiveClick = submitMaintenanceForm,
+            negativeButton = SelectionButton("Kembali"),
+            onNegativeClick = { failedSubmitMaintenanceFormDialogUseCase.finish() }
+        ),
+        body = { Text(text = "Maintenance gagal di submit!") }
+    )
 
     Scaffold(
         topBar = {
@@ -244,11 +327,12 @@ fun MaintenanceFormTechnicianScreen(
             Divider()
             KrakatauButton(
                 title = "Submit",
-                onClicked = {},
+                onClicked = onSubmitButtonClicked,
+                enabled = editableForm,
                 modifier = Modifier
                     .padding(18.dp)
                     .align(Alignment.CenterHorizontally),
-                enabled = editableForm
+                loading = buttonSubmitLoadingState
             )
         }
     }

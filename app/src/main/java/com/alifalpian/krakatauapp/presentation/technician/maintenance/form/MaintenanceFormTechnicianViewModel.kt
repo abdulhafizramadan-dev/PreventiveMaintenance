@@ -9,6 +9,7 @@ import com.alifalpian.krakatauapp.domain.model.Resource
 import com.alifalpian.krakatauapp.domain.usecase.HomeUseCase
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.MutableStateFlow
+import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.launch
 import javax.inject.Inject
 
@@ -19,6 +20,10 @@ class MaintenanceFormTechnicianViewModel @Inject constructor(
 
     var maintenanceFormTechnicianUiState = MutableStateFlow(MaintenanceFormTechnicianUiState())
         private set
+
+    val buttonSubmitLoadingState get() = maintenanceFormTechnicianUiState.map {
+        it.submitMaintenance is Resource.Loading
+    }
 
     fun getEquipment(equipmentId: String) {
         viewModelScope.launch {
@@ -97,7 +102,8 @@ class MaintenanceFormTechnicianViewModel @Inject constructor(
         equipmentType: String,
         maintenanceCheckPoints: List<MaintenanceCheckPoint>,
         maintenanceTools: List<MaintenanceTools>,
-        maintenanceSafetyUse: List<MaintenanceSafetyUse>
+        maintenanceSafetyUse: List<MaintenanceSafetyUse>,
+        equipmentWillMaintenanceDocumentId: String
     ) {
         viewModelScope.launch {
             homeUseCase.submitMaintenance(
@@ -107,9 +113,12 @@ class MaintenanceFormTechnicianViewModel @Inject constructor(
                 equipmentType = equipmentType,
                 maintenanceCheckPoints = maintenanceCheckPoints,
                 maintenanceTools = maintenanceTools,
-                maintenanceSafetyUse = maintenanceSafetyUse
+                maintenanceSafetyUse = maintenanceSafetyUse,
+                equipmentWillMaintenanceDocumentId = equipmentWillMaintenanceDocumentId
             ).collect { resource ->
-
+                maintenanceFormTechnicianUiState.value = maintenanceFormTechnicianUiState.value.copy(
+                    submitMaintenance = resource
+                )
             }
         }
     }
@@ -141,8 +150,8 @@ class MaintenanceFormTechnicianViewModel @Inject constructor(
     fun addToolsMaintenanceForm() {
         val maintenanceToolsFormResource = maintenanceFormTechnicianUiState.value.maintenanceToolsForm
         if (maintenanceToolsFormResource is Resource.Success) {
-            val maintenanceToolsForm = maintenanceToolsFormResource.data.toMutableList()
-            maintenanceToolsForm.add(MaintenanceTools())
+            val maintenanceToolsForm = mutableListOf(MaintenanceTools())
+            maintenanceToolsForm.addAll(maintenanceToolsFormResource.data)
             maintenanceFormTechnicianUiState.value = maintenanceFormTechnicianUiState.value.copy(
                 maintenanceToolsForm = Resource.Success(maintenanceToolsForm)
             )
@@ -153,8 +162,8 @@ class MaintenanceFormTechnicianViewModel @Inject constructor(
     fun addSafetyMaintenanceTools() {
         val safetyMaintenanceToolsResource = maintenanceFormTechnicianUiState.value.maintenanceSafetyUseForm
         if (safetyMaintenanceToolsResource is Resource.Success) {
-            val safetyMaintenanceTools = safetyMaintenanceToolsResource.data.toMutableList()
-            safetyMaintenanceTools.add(MaintenanceSafetyUse())
+            val safetyMaintenanceTools = mutableListOf(MaintenanceSafetyUse())
+            safetyMaintenanceTools.addAll(safetyMaintenanceToolsResource.data)
             maintenanceFormTechnicianUiState.value = maintenanceFormTechnicianUiState.value.copy(
                 maintenanceSafetyUseForm = Resource.Success(safetyMaintenanceTools)
             )

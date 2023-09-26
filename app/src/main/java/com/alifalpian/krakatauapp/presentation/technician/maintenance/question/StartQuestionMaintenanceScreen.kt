@@ -36,13 +36,19 @@ import com.ramcosta.composedestinations.navigation.EmptyDestinationsNavigator
 fun StartQuestionMaintenanceScreen(
     modifier: Modifier = Modifier,
     navigator: DestinationsNavigator = EmptyDestinationsNavigator,
-    equipmentDocumentId: String = emptyString()
+    equipmentDocumentId: String = emptyString(),
+    equipmentWillMaintenanceDocumentId: String = emptyString(),
+    technicianDocumentId: String = emptyString()
 ) {
     val onNavigationIconClicked: () -> Unit = {
         navigator.navigateUp()
     }
     val onStartMaintenanceButtonClicked: () -> Unit = {
-        navigator.navigate(MaintenanceFormTechnicianScreenDestination(equipmentDocumentId = equipmentDocumentId))
+        navigator.navigate(MaintenanceFormTechnicianScreenDestination(
+            equipmentDocumentId = equipmentDocumentId,
+            technicianDocumentId = technicianDocumentId,
+            equipmentWillMaintenanceDocumentId = equipmentWillMaintenanceDocumentId
+        ))
     }
     Scaffold(
         topBar = {

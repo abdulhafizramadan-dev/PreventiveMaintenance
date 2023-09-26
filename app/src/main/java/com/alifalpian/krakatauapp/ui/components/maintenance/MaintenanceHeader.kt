@@ -24,6 +24,7 @@ import com.alifalpian.krakatauapp.domain.model.Resource
 import com.alifalpian.krakatauapp.domain.model.User
 import com.alifalpian.krakatauapp.ui.theme.PreventiveMaintenanceTheme
 import com.alifalpian.krakatauapp.ui.theme.ShimmerColor
+import com.alifalpian.krakatauapp.util.toMaintenanceDateFormat
 import com.valentinilk.shimmer.shimmer
 
 @Composable
@@ -113,7 +114,7 @@ fun SuccessMaintenanceHeader(
     ) {
         MaintenanceHeaderItem(label = "ORDER", value = equipment.equipment)
         Spacer(modifier = Modifier.height(8.dp))
-        MaintenanceHeaderItem(label = "TANGGAL", value = equipment.date)
+        MaintenanceHeaderItem(label = "TANGGAL", value = equipment.date.toMaintenanceDateFormat())
         Spacer(modifier = Modifier.height(8.dp))
         MaintenanceHeaderItem(label = "INTERVAL", value = equipment.interval)
         Spacer(modifier = Modifier.height(8.dp))
@@ -164,7 +165,6 @@ fun PreviewMaintenanceHeader() {
             val equipment = Equipment(
                 documentId = "user123",
                 equipment = "2210043175",
-                date = "09/12/2023",
                 interval = "4 MON",
                 execution = "PG IT",
                 location = "Ruang Staff SEKPER (WTP)",

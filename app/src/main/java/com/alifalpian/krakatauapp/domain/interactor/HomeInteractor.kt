@@ -73,7 +73,8 @@ class HomeInteractor @Inject constructor(
         equipmentType: String,
         maintenanceCheckPoints: List<MaintenanceCheckPoint>,
         maintenanceTools: List<MaintenanceTools>,
-        maintenanceSafetyUse: List<MaintenanceSafetyUse>
+        maintenanceSafetyUse: List<MaintenanceSafetyUse>,
+        equipmentWillMaintenanceDocumentId: String
     ): Flow<Resource<String>> {
         return firebaseFirestoreRepository.submitMaintenance(
             equipmentDocumentId = equipmentDocumentId,
@@ -82,7 +83,8 @@ class HomeInteractor @Inject constructor(
             equipmentType = equipmentType,
             maintenanceCheckPoints = maintenanceCheckPoints,
             maintenanceTools = maintenanceTools,
-            maintenanceSafetyUse = maintenanceSafetyUse
+            maintenanceSafetyUse = maintenanceSafetyUse,
+            equipmentWillMaintenanceDocumentId = equipmentWillMaintenanceDocumentId
         )
     }
 }
