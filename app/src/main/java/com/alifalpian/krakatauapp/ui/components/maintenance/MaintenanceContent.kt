@@ -40,11 +40,8 @@ fun MaintenanceContent(
     maintenanceCheckPoints: List<MaintenanceCheckPoint>,
     type: MaintenanceContentType = MaintenanceContentType.Technician
 ) {
-    when (equipment) {
-        Resource.Idling -> {}
-        Resource.Loading -> {}
-        is Resource.Error -> {}
-        is Resource.Success -> MaintenanceContentSuccess(
+    if (equipment is Resource.Success) {
+        MaintenanceContentSuccess(
             modifier = modifier,
             equipment = equipment.data,
             type = type,

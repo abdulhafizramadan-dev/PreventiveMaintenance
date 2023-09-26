@@ -28,7 +28,7 @@ fun MaintenanceFormCheckList(
     modifier: Modifier = Modifier,
     maintenanceCheckPoints: Resource<List<MaintenanceCheckPoint>>,
     checkListEnabled: Boolean = false,
-    onCheckedChanged: (MaintenanceCheckPoint, Int) -> Unit
+    onCheckedChanged: (MaintenanceCheckPoint, Int) -> Unit = {_, _ -> }
 ) {
     if (maintenanceCheckPoints is Resource.Loading) {
         LoadingMaintenanceFormCheckList(modifier = modifier)
@@ -120,20 +120,6 @@ private fun SuccessMaintenanceFormCheckList(
                 Divider()
             }
         }
-        Spacer(modifier = Modifier.height(16.dp))
-        Text(
-            text = "DURASI PLANT : 1.0",
-            color = Color.Black,
-            fontSize = 12.sp,
-            fontWeight = FontWeight.Medium
-        )
-        Spacer(modifier = Modifier.height(14.dp))
-        Text(
-            text = "DURASI AKTUAL : 3.0",
-            color = Color.Black,
-            fontSize = 12.sp,
-            fontWeight = FontWeight.Medium
-        )
     }
 }
 

@@ -1,4 +1,4 @@
-package com.alifalpian.krakatauapp.presentation.technician.dashboard
+package com.alifalpian.krakatauapp.presentation.empoyee.dashboard
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
@@ -9,17 +9,17 @@ import kotlinx.coroutines.launch
 import javax.inject.Inject
 
 @HiltViewModel
-class DashboardTechnicianViewModel @Inject constructor(
+class DashboardEmployeeViewModel @Inject constructor(
     private val homeUseCase: HomeUseCase
 ) : ViewModel() {
 
-    var dashboardTechnicianUiState = MutableStateFlow(DashboardTechnicianUiState())
+    var dashboardEmployeeUiState = MutableStateFlow(DashboardEmployeeUiState())
         private set
 
     fun getLoggedUser() {
         viewModelScope.launch {
             homeUseCase.isUserLogged().collect { resource ->
-                dashboardTechnicianUiState.value = dashboardTechnicianUiState.value.copy(
+                dashboardEmployeeUiState.value = dashboardEmployeeUiState.value.copy(
                     loggedUser = resource
                 )
             }
@@ -29,20 +29,21 @@ class DashboardTechnicianViewModel @Inject constructor(
     fun getUser(uid: String) {
         viewModelScope.launch {
             homeUseCase.getUser(uid).collect { resource ->
-                dashboardTechnicianUiState.value = dashboardTechnicianUiState.value.copy(
+                dashboardEmployeeUiState.value = dashboardEmployeeUiState.value.copy(
                     user = resource
                 )
             }
         }
     }
 
-    fun getTechnicianDashboardEquipments(technicianDocumentId: String) {
+    fun getEmployeeEquipments(uid: String) {
         viewModelScope.launch {
-            homeUseCase.getTechnicianDashboardEquipments(technicianDocumentId).collect { resource ->
-                dashboardTechnicianUiState.value = dashboardTechnicianUiState.value.copy(
-                    dashboardEquipments = resource
+            homeUseCase.getEmployeeEquipments(uid).collect { resource ->
+                dashboardEmployeeUiState.value = dashboardEmployeeUiState.value.copy(
+                    equipments = resource
                 )
             }
         }
     }
+
 }

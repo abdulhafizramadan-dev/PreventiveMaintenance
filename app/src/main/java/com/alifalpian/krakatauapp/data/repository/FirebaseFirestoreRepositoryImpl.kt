@@ -19,9 +19,6 @@ import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.catch
 import kotlinx.coroutines.flow.flow
 import kotlinx.coroutines.tasks.await
-import java.time.Instant
-import java.time.LocalDateTime
-import java.time.Month
 import java.util.Date
 import java.util.UUID
 import javax.inject.Inject
@@ -49,9 +46,26 @@ class FirebaseFirestoreRepositoryImpl @Inject constructor(
         emit(Resource.Error(it.message))
     }
 
-    override fun getEquipment(equipmentId: String): Flow<Resource<Equipment>> = flow<Resource<Equipment>> {
+    override fun getUserByDocumentId(documentId: String): Flow<Resource<User>> = flow<Resource<User>> {
         emit(Resource.Loading)
-        val equipment = firestore.collection("equipments").document(equipmentId).get().await().let {
+        val user = firestore.collection("users").document(documentId).get().await().let {
+            User(
+                documentId = it.id,
+                type = it.getString("type") ?: emptyString(),
+                photo = it.getString("photo") ?: emptyString(),
+                name = it.getString("name") ?: emptyString(),
+                division = it.getString("division")?.titleCase() ?: emptyString(),
+                nik = it.getString("nik") ?: emptyString()
+            )
+        }
+        emit(Resource.Success(user))
+    }.catch {
+        emit(Resource.Error(it.message))
+    }
+
+    override fun getEquipment(equipmentDocumentId: String): Flow<Resource<Equipment>> = flow<Resource<Equipment>> {
+        emit(Resource.Loading)
+        val equipment = firestore.collection("equipments").document(equipmentDocumentId).get().await().let {
             Equipment(
                 documentId = it.id,
                 equipment = it.getString("equipment") ?: emptyString(),
@@ -98,7 +112,11 @@ class FirebaseFirestoreRepositoryImpl @Inject constructor(
                 id = UUID.randomUUID().toString()
             )
         }
-        emit(Resource.Success(technicianDashboardEquipments))
+        if (technicianDashboardEquipments.isNotEmpty()) {
+            emit(Resource.Success(technicianDashboardEquipments))
+        } else {
+            emit(Resource.Empty)
+        }
     }.catch {
         emit(Resource.Error(it.message))
     }
@@ -124,16 +142,21 @@ class FirebaseFirestoreRepositoryImpl @Inject constructor(
             )
             equipment
         }
-        emit(Resource.Success(equipments))
+        if (equipments.isNotEmpty()) {
+            emit(Resource.Success(equipments))
+        } else {
+            emit(Resource.Empty)
+        }
     }.catch {
         emit(Resource.Error(it.message))
     }
 
     override fun getEquipmentsHasBeenMaintenance(technicianDocumentId: String): Flow<Resource<List<Equipment>>> = flow<Resource<List<Equipment>>> {
         emit(Resource.Loading)
+        val startDate = Date(2023, 9, 20)
         val maintenanceHistories = firestore.collection("maintenance_history").whereEqualTo("technician_document_id", technicianDocumentId)
 //            .whereLessThan("date", Date(2023, 8, 23))
-//            .whereGreaterThan("date", "September 20, 2023 at 9:39:27 PM UTC+7")
+            .whereGreaterThan("date", startDate)
             .get().await()
         val equipments = maintenanceHistories
             .map {
@@ -169,10 +192,122 @@ class FirebaseFirestoreRepositoryImpl @Inject constructor(
                 )
                 equipment
             }
-        emit(Resource.Success(equipments))
+        if (equipments.isNotEmpty()) {
+            emit(Resource.Success(equipments))
+        } else {
+            emit(Resource.Empty)
+        }
     }.catch {
         emit(Resource.Error(it.message))
         Log.d("TAG", "getEquipmentsHasBeenMaintenance: Error = ${it.message}")
+    }
+
+    override fun getWaitingForApprovalEquipmentsMaintenance(employeeDocumentId: String): Flow<Resource<List<Equipment>>> = flow<Resource<List<Equipment>>> {
+        emit(Resource.Loading)
+        val maintenanceHistories = firestore.collection("maintenance_history")
+            .whereEqualTo("employee_document_id", employeeDocumentId)
+            .whereEqualTo("status", "waiting for approval")
+//            .whereLessThan("date", Date(2023, 8, 23))
+//            .whereGreaterThan("date", "September 20, 2023 at 9:39:27 PM UTC+7")
+            .get().await()
+        val equipments = maintenanceHistories
+            .map {
+                MaintenanceHistory(
+                    documentId = it.id,
+                    technicianDocumentId = it.getString("technician_document_id") ?: emptyString(),
+                    maintenanceCheckPoint = it.getString("maintenance_check_point") ?: emptyString(),
+                    equipmentType = it.getString("type") ?: emptyString(),
+                    equipmentDocumentId = it.getString("equipment_document_id") ?: emptyString(),
+                    date = it.getDate("date") ?: Date(),
+                    maintenanceCheckPointHistoryDocumentId = it.getString("maintenance_check_point_history_document_id") ?: emptyString(),
+                    status = it.getString("status")?.titleCase() ?: emptyString()
+                )
+            }
+            .sortedByDescending { it.date }
+            .map { maintenanceHistory ->
+                val maintenanceHistoryDocumentId = maintenanceHistory.documentId
+                val equipmentDocumentId = maintenanceHistory.equipmentDocumentId
+                val technicianDocumentId = maintenanceHistory.technicianDocumentId
+                val equipmentSnapshot = firestore.collection("equipments").document(equipmentDocumentId).get().await()
+                val technicianSnapshot = firestore.collection("users").document(technicianDocumentId).get().await()
+                val equipment = Equipment(
+                    documentId = equipmentSnapshot.id,
+                    equipment = equipmentSnapshot.getString("equipment") ?: emptyString(),
+                    date = maintenanceHistory.date,
+                    interval = equipmentSnapshot.getString("interval") ?: emptyString(),
+                    execution = equipmentSnapshot.getString("execution") ?: emptyString(),
+                    location = equipmentSnapshot.getString("location") ?: emptyString(),
+                    description = equipmentSnapshot.getString("description") ?: emptyString(),
+                    type = equipmentSnapshot.getString("type") ?: emptyString(),
+                    maintenanceCheckPointType = maintenanceHistory.maintenanceCheckPoint,
+                    uid = equipmentSnapshot.getString("uid") ?: emptyString(),
+                    maintenanceHistoryDocumentId = maintenanceHistoryDocumentId,
+                    maintenanceStatus = maintenanceHistory.status,
+                    technicianName = technicianSnapshot.getString("name") ?: emptyString()
+                )
+                equipment
+            }
+        if (equipments.isNotEmpty()) {
+            emit(Resource.Success(equipments))
+        } else {
+            emit(Resource.Empty)
+        }
+    }.catch {
+        emit(Resource.Error(it.message))
+    }
+
+    override fun getHasBeenApprovedEquipmentsMaintenance(employeeDocumentId: String): Flow<Resource<List<Equipment>>> = flow<Resource<List<Equipment>>> {
+        emit(Resource.Loading)
+        val maintenanceHistories = firestore.collection("maintenance_history")
+            .whereEqualTo("employee_document_id", employeeDocumentId)
+            .whereNotEqualTo("status", "waiting for approval")
+//            .whereLessThan("date", Date(2023, 8, 23))
+//            .whereGreaterThan("date", "September 20, 2023 at 9:39:27 PM UTC+7")
+            .get().await()
+        val equipments = maintenanceHistories
+            .map {
+                MaintenanceHistory(
+                    documentId = it.id,
+                    technicianDocumentId = it.getString("technician_document_id") ?: emptyString(),
+                    maintenanceCheckPoint = it.getString("maintenance_check_point") ?: emptyString(),
+                    equipmentType = it.getString("type") ?: emptyString(),
+                    equipmentDocumentId = it.getString("equipment_document_id") ?: emptyString(),
+                    date = it.getDate("date") ?: Date(),
+                    maintenanceCheckPointHistoryDocumentId = it.getString("maintenance_check_point_history_document_id") ?: emptyString(),
+                    status = it.getString("status")?.titleCase() ?: emptyString()
+                )
+            }
+            .sortedByDescending { it.date }
+            .map { maintenanceHistory ->
+                val maintenanceHistoryDocumentId = maintenanceHistory.documentId
+                val equipmentDocumentId = maintenanceHistory.equipmentDocumentId
+                val technicianDocumentId = maintenanceHistory.technicianDocumentId
+                val equipmentSnapshot = firestore.collection("equipments").document(equipmentDocumentId).get().await()
+                val technicianSnapshot = firestore.collection("users").document(technicianDocumentId).get().await()
+                val equipment = Equipment(
+                    documentId = equipmentSnapshot.id,
+                    equipment = equipmentSnapshot.getString("equipment") ?: emptyString(),
+                    date = maintenanceHistory.date,
+                    interval = equipmentSnapshot.getString("interval") ?: emptyString(),
+                    execution = equipmentSnapshot.getString("execution") ?: emptyString(),
+                    location = equipmentSnapshot.getString("location") ?: emptyString(),
+                    description = equipmentSnapshot.getString("description") ?: emptyString(),
+                    type = equipmentSnapshot.getString("type") ?: emptyString(),
+                    maintenanceCheckPointType = maintenanceHistory.maintenanceCheckPoint,
+                    uid = equipmentSnapshot.getString("uid") ?: emptyString(),
+                    maintenanceHistoryDocumentId = maintenanceHistoryDocumentId,
+                    maintenanceStatus = maintenanceHistory.status,
+                    technicianName = technicianSnapshot.getString("name") ?: emptyString()
+                )
+                equipment
+            }
+        if (equipments.isNotEmpty()) {
+            emit(Resource.Success(equipments))
+        } else {
+            emit(Resource.Empty)
+        }
+    }.catch {
+        emit(Resource.Error(it.message))
     }
 
     override fun getMaintenanceHistory(maintenanceHistoryDocumentId: String): Flow<Resource<MaintenanceHistory>> = flow<Resource<MaintenanceHistory>> {
@@ -186,6 +321,10 @@ class FirebaseFirestoreRepositoryImpl @Inject constructor(
                 equipmentType = it.getString("type") ?: emptyString(),
                 date = it.getDate("date") ?: Date(),
                 maintenanceCheckPointHistoryDocumentId = it.getString("maintenance_check_point_history_document_id") ?: emptyString(),
+                employeeDocumentId = it.getString("employee_document_id") ?: emptyString(),
+                status = it.getString("status") ?: emptyString(),
+                plantDuration = it.getDate("plant_duration") ?: Date(),
+                actualDuration = it.getDate("actual_duration") ?: Date()
             )
         }
         emit(Resource.Success(maintenanceHistory))
@@ -204,7 +343,11 @@ class FirebaseFirestoreRepositoryImpl @Inject constructor(
                 )
             }
         }
-        emit(Resource.Success(maintenanceCheckPoints))
+        if (maintenanceCheckPoints.isNotEmpty()) {
+            emit(Resource.Success(maintenanceCheckPoints))
+        } else {
+            emit(Resource.Empty)
+        }
     }.catch {
         emit(Resource.Error(it.message))
     }
@@ -225,7 +368,11 @@ class FirebaseFirestoreRepositoryImpl @Inject constructor(
                 )
             }
         }
-        emit(Resource.Success(maintenanceCheckPointHistory))
+        if (maintenanceCheckPointHistory.isNotEmpty()) {
+            emit(Resource.Success(maintenanceCheckPointHistory))
+        } else {
+            emit(Resource.Empty)
+        }
     }.catch {
         emit(Resource.Error(it.message))
     }
@@ -241,7 +388,11 @@ class FirebaseFirestoreRepositoryImpl @Inject constructor(
                     unitOfMeasurement = it.get("unit_of_measurement")?.toString()?.toInt() ?: 0
                 )
             }
-        emit(Resource.Success(maintenanceTools))
+        if (maintenanceTools.isNotEmpty()) {
+            emit(Resource.Success(maintenanceTools))
+        } else {
+            emit(Resource.Empty)
+        }
     }.catch {
         emit(Resource.Error(it.message))
     }
@@ -257,7 +408,11 @@ class FirebaseFirestoreRepositoryImpl @Inject constructor(
                     unitOfMeasurement = it.get("unit_of_measurement")?.toString()?.toInt() ?: 0
                 )
             }
-        emit(Resource.Success(maintenanceTools))
+        if (maintenanceTools.isNotEmpty()) {
+            emit(Resource.Success(maintenanceTools))
+        } else {
+            emit(Resource.Empty)
+        }
     }.catch {
         emit(Resource.Error(it.message))
     }
@@ -266,11 +421,13 @@ class FirebaseFirestoreRepositoryImpl @Inject constructor(
         equipmentDocumentId: String,
         maintenanceCheckPointType: String,
         technicianDocumentId: String,
+        employeeDocumentId: String,
         equipmentType: String,
         maintenanceCheckPoints: List<MaintenanceCheckPoint>,
         maintenanceTools: List<MaintenanceTools>,
         maintenanceSafetyUse: List<MaintenanceSafetyUse>,
-        equipmentWillMaintenanceDocumentId: String
+        equipmentWillMaintenanceDocumentId: String,
+        planDuration: FieldValue
     ): Flow<Resource<String>> = flow<Resource<String>> {
 
         emit(Resource.Loading)
@@ -286,8 +443,11 @@ class FirebaseFirestoreRepositoryImpl @Inject constructor(
             "maintenance_check_point" to maintenanceCheckPointType,
             "maintenance_check_point_history_document_id" to maintenanceCheckpointDocumentId,
             "technician_document_id" to technicianDocumentId,
+            "employee_document_id" to employeeDocumentId,
             "type" to equipmentType,
-            "status" to "pending"
+            "status" to "waiting for approval",
+            "plan_duration" to planDuration,
+            "actual_duration" to FieldValue.serverTimestamp()
         )
         val maintenanceHistoryResponse = firestore.collection("maintenance_history")
             .add(maintenanceHistoryMap).await()
@@ -323,4 +483,49 @@ class FirebaseFirestoreRepositoryImpl @Inject constructor(
         emit(Resource.Error(it.message))
     }
 
+    override fun getEmployeeEquipments(uid: String): Flow<Resource<List<Equipment>>> = flow<Resource<List<Equipment>>> {
+        emit(Resource.Loading)
+        val equipments = firestore.collection("equipments").whereEqualTo("uid", uid).get().await().map {
+            val equipment = Equipment(
+                documentId = it.id,
+                equipment = it.getString("equipment") ?: emptyString(),
+                date = it.getDate("date") ?: Date(),
+                interval = it.getString("interval") ?: emptyString(),
+                execution = it.getString("execution") ?: emptyString(),
+                location = it.getString("location") ?: emptyString(),
+                description = it.getString("description") ?: emptyString(),
+                type = it.getString("type") ?: emptyString(),
+                maintenanceCheckPointType = it.getString("maintenance_check_point_type") ?: emptyString(),
+                uid = it.getString("uid") ?: emptyString()
+            )
+            equipment
+        }
+        if (equipments.isNotEmpty()) {
+            emit(Resource.Success(equipments))
+        } else {
+            emit(Resource.Empty)
+        }
+    }.catch {
+        emit(Resource.Error(it.message))
+    }
+
+    override fun acceptMaintenanceEquipments(maintenanceHistoryDocumentId: String): Flow<Resource<String>> = flow<Resource<String>> {
+        emit(Resource.Loading)
+        firestore.collection("maintenance_history").document(maintenanceHistoryDocumentId)
+            .update("status", "accept")
+            .await()
+        emit(Resource.Success("Success"))
+    }.catch {
+        emit(Resource.Error(it.message))
+    }
+
+    override fun rejectMaintenanceEquipments(maintenanceHistoryDocumentId: String): Flow<Resource<String>> = flow<Resource<String>> {
+        emit(Resource.Loading)
+        firestore.collection("maintenance_history").document(maintenanceHistoryDocumentId)
+            .update("status", "reject")
+            .await()
+        emit(Resource.Success("Success"))
+    }.catch {
+        emit(Resource.Error(it.message))
+    }
 }

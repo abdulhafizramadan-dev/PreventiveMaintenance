@@ -12,7 +12,9 @@ import com.alifalpian.krakatauapp.domain.repository.FirebaseAuthRepository
 import com.alifalpian.krakatauapp.domain.repository.FirebaseFirestoreRepository
 import com.alifalpian.krakatauapp.domain.usecase.HomeUseCase
 import com.google.firebase.auth.FirebaseUser
+import com.google.firebase.firestore.FieldValue
 import kotlinx.coroutines.flow.Flow
+import java.util.Date
 import javax.inject.Inject
 import javax.inject.Singleton
 
@@ -30,6 +32,10 @@ class HomeInteractor @Inject constructor(
         return firebaseFirestoreRepository.getUser(uid)
     }
 
+    override fun getUserByDocumentId(documentId: String): Flow<Resource<User>> {
+        return firebaseFirestoreRepository.getUserByDocumentId(documentId)
+    }
+
     override fun getEquipment(equipmentDocumentId: String): Flow<Resource<Equipment>> {
         return firebaseFirestoreRepository.getEquipment(equipmentDocumentId)
     }
@@ -44,6 +50,14 @@ class HomeInteractor @Inject constructor(
 
     override fun getEquipmentsHasBeenMaintenance(technicianDocumentId: String): Flow<Resource<List<Equipment>>> {
         return firebaseFirestoreRepository.getEquipmentsHasBeenMaintenance(technicianDocumentId)
+    }
+
+    override fun getWaitingForApprovalEquipmentsMaintenance(employeeDocumentId: String): Flow<Resource<List<Equipment>>> {
+        return firebaseFirestoreRepository.getWaitingForApprovalEquipmentsMaintenance(employeeDocumentId)
+    }
+
+    override fun getHasBeenApprovedEquipmentsMaintenance(employeeDocumentId: String): Flow<Resource<List<Equipment>>> {
+        return firebaseFirestoreRepository.getHasBeenApprovedEquipmentsMaintenance(employeeDocumentId)
     }
 
     override fun getMaintenanceHistory(maintenanceHistoryDocumentId: String): Flow<Resource<MaintenanceHistory>> {
@@ -70,21 +84,37 @@ class HomeInteractor @Inject constructor(
         equipmentDocumentId: String,
         maintenanceCheckPointType: String,
         technicianDocumentId: String,
+        employeeDocumentId: String,
         equipmentType: String,
         maintenanceCheckPoints: List<MaintenanceCheckPoint>,
         maintenanceTools: List<MaintenanceTools>,
         maintenanceSafetyUse: List<MaintenanceSafetyUse>,
-        equipmentWillMaintenanceDocumentId: String
+        equipmentWillMaintenanceDocumentId: String,
+        planDuration: FieldValue
     ): Flow<Resource<String>> {
         return firebaseFirestoreRepository.submitMaintenance(
             equipmentDocumentId = equipmentDocumentId,
             maintenanceCheckPointType = maintenanceCheckPointType,
             technicianDocumentId = technicianDocumentId,
+            employeeDocumentId = employeeDocumentId,
             equipmentType = equipmentType,
             maintenanceCheckPoints = maintenanceCheckPoints,
             maintenanceTools = maintenanceTools,
             maintenanceSafetyUse = maintenanceSafetyUse,
-            equipmentWillMaintenanceDocumentId = equipmentWillMaintenanceDocumentId
+            equipmentWillMaintenanceDocumentId = equipmentWillMaintenanceDocumentId,
+            planDuration = planDuration
         )
+    }
+
+    override fun getEmployeeEquipments(uid: String): Flow<Resource<List<Equipment>>> {
+        return firebaseFirestoreRepository.getEmployeeEquipments(uid)
+    }
+
+    override fun acceptMaintenanceEquipments(maintenanceHistoryDocumentId: String): Flow<Resource<String>> {
+        return firebaseFirestoreRepository.acceptMaintenanceEquipments(maintenanceHistoryDocumentId)
+    }
+
+    override fun rejectMaintenanceEquipments(maintenanceHistoryDocumentId: String): Flow<Resource<String>> {
+        return firebaseFirestoreRepository.rejectMaintenanceEquipments(maintenanceHistoryDocumentId)
     }
 }

@@ -2,6 +2,7 @@ package com.alifalpian.krakatauapp.presentation.login
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import com.alifalpian.krakatauapp.domain.model.Resource
 import com.alifalpian.krakatauapp.domain.usecase.LoginUseCase
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.MutableStateFlow
@@ -22,6 +23,10 @@ class LoginViewModel @Inject constructor(
         it.email.isNotEmpty() && it.password.length >= 6
     }
 
+    val loginLoadingState get() = loginUiState.map {
+        it.loginResult is Resource.Loading
+    }
+
     fun onEmailChange(email: String) {
         loginUiState.value = loginUiState.value.copy(email = email)
     }
@@ -29,11 +34,6 @@ class LoginViewModel @Inject constructor(
     fun onPasswordChange(password: String) {
         loginUiState.value = loginUiState.value.copy(password = password)
     }
-
-    fun onLoginLoadingState(loadingState: Boolean) {
-        loginUiState.value = loginUiState.value.copy(loadingState = loadingState)
-    }
-
 
     fun signInWithEmailAndPassword(email: String, password: String) {
         viewModelScope.launch {

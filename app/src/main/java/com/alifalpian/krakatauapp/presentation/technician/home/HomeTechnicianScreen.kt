@@ -13,7 +13,6 @@ import androidx.navigation.compose.rememberNavController
 import com.alifalpian.krakatauapp.R
 import com.alifalpian.krakatauapp.domain.model.BottomNavigationItem
 import com.alifalpian.krakatauapp.presentation.technician.dashboard.DashboardTechnicianScreen
-import com.alifalpian.krakatauapp.presentation.technician.history.HistoryTechnicianScreen
 import com.alifalpian.krakatauapp.presentation.technician.maintenance.list.ListMaintenanceTechnicianScreen
 import com.alifalpian.krakatauapp.ui.components.krakatau.KrakatauNavigationBar
 import com.alifalpian.krakatauapp.ui.navigation.KrakatauAppScreens
@@ -35,7 +34,6 @@ fun HomeTechnicianScreen(
         listOf(
             BottomNavigationItem("dashboard", R.drawable.ic_menu_home, "Dashboard"),
             BottomNavigationItem("maintenance", R.drawable.ic_menu_maintenance, "Maintenance"),
-            BottomNavigationItem("history", R.drawable.ic_menu_history, "History")
         )
     }
     Scaffold(
@@ -50,13 +48,10 @@ fun HomeTechnicianScreen(
             modifier = Modifier.padding(paddingValues)
         ) {
             composable(KrakatauAppScreens.DashboardScreen.route) {
-                DashboardTechnicianScreen(navigator = navigator)
+                DashboardTechnicianScreen()
             }
             composable(KrakatauAppScreens.MaintenanceScreen.route) {
                 ListMaintenanceTechnicianScreen(navigator = navigator)
-            }
-            composable(KrakatauAppScreens.HistoryScreen.route) {
-                HistoryTechnicianScreen(navigator = navigator)
             }
         }
     }

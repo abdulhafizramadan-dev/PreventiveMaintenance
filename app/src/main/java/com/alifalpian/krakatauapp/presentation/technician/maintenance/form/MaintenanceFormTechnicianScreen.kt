@@ -183,6 +183,7 @@ fun MaintenanceFormTechnicianScreen(
                 equipmentDocumentId = equipment.data.documentId,
                 maintenanceCheckPointType = equipment.data.type,
                 technicianDocumentId = technicianDocumentId,
+                employeeDocumentId = user.data.documentId,
                 equipmentType = equipment.data.type,
                 maintenanceCheckPoints = maintenanceCheckPoints.data,
                 maintenanceTools = maintenanceToolsForm.data.filter { it.description.isNotEmpty() },

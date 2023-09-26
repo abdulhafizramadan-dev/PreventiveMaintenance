@@ -9,13 +9,17 @@ import com.alifalpian.krakatauapp.domain.model.Resource
 import com.alifalpian.krakatauapp.domain.model.TechnicianDashboardEquipment
 import com.alifalpian.krakatauapp.domain.model.User
 import com.google.firebase.auth.FirebaseUser
+import com.google.firebase.firestore.FieldValue
 import kotlinx.coroutines.flow.Flow
+import java.util.Date
 
 interface HomeUseCase {
 
     fun isUserLogged(): Flow<FirebaseUser?>
 
     fun getUser(uid: String): Flow<Resource<User>>
+
+    fun getUserByDocumentId(documentId: String): Flow<Resource<User>>
 
     fun getEquipment(equipmentDocumentId: String): Flow<Resource<Equipment>>
 
@@ -24,6 +28,10 @@ interface HomeUseCase {
     fun getEquipmentsWillBeMaintenance(technicianId: String): Flow<Resource<List<Equipment>>>
 
     fun getEquipmentsHasBeenMaintenance(technicianId: String): Flow<Resource<List<Equipment>>>
+
+    fun getWaitingForApprovalEquipmentsMaintenance(employeeDocumentId: String): Flow<Resource<List<Equipment>>>
+
+    fun getHasBeenApprovedEquipmentsMaintenance(employeeDocumentId: String): Flow<Resource<List<Equipment>>>
 
     fun getMaintenanceHistory(maintenanceHistoryDocumentId: String): Flow<Resource<MaintenanceHistory>>
 
@@ -39,11 +47,19 @@ interface HomeUseCase {
         equipmentDocumentId: String,
         maintenanceCheckPointType: String,
         technicianDocumentId: String,
+        employeeDocumentId: String,
         equipmentType: String,
         maintenanceCheckPoints: List<MaintenanceCheckPoint>,
         maintenanceTools: List<MaintenanceTools>,
         maintenanceSafetyUse: List<MaintenanceSafetyUse>,
-        equipmentWillMaintenanceDocumentId: String
+        equipmentWillMaintenanceDocumentId: String,
+        planDuration: FieldValue
     ): Flow<Resource<String>>
+
+    fun getEmployeeEquipments(uid: String): Flow<Resource<List<Equipment>>>
+
+    fun acceptMaintenanceEquipments(maintenanceHistoryDocumentId: String): Flow<Resource<String>>
+
+    fun rejectMaintenanceEquipments(maintenanceHistoryDocumentId: String): Flow<Resource<String>>
 
 }

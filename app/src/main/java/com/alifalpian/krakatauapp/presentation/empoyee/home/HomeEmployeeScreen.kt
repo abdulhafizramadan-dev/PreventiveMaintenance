@@ -19,6 +19,7 @@ import com.alifalpian.krakatauapp.presentation.empoyee.maintenance.list.ListMain
 import com.alifalpian.krakatauapp.ui.components.krakatau.KrakatauNavigationBar
 import com.alifalpian.krakatauapp.ui.navigation.KrakatauAppScreens
 import com.alifalpian.krakatauapp.ui.theme.PreventiveMaintenanceTheme
+import com.alifalpian.krakatauapp.util.emptyString
 import com.ramcosta.composedestinations.annotation.Destination
 import com.ramcosta.composedestinations.navigation.DestinationsNavigator
 import com.ramcosta.composedestinations.navigation.EmptyDestinationsNavigator
@@ -30,7 +31,7 @@ import com.ramcosta.composedestinations.navigation.EmptyDestinationsNavigator
 @Composable
 fun HomeEmployeeScreen(
     modifier: Modifier = Modifier,
-    navigator: DestinationsNavigator = EmptyDestinationsNavigator
+    navigator: DestinationsNavigator = EmptyDestinationsNavigator,
 ) {
     val navController = rememberNavController()
     val bottomNavigationItems = remember {
@@ -39,6 +40,7 @@ fun HomeEmployeeScreen(
             BottomNavigationItem("maintenance", R.drawable.ic_menu_maintenance, "Maintenance"),
         )
     }
+
     Scaffold(
         bottomBar = {
             KrakatauNavigationBar(navController, bottomNavigationItems)
@@ -51,7 +53,7 @@ fun HomeEmployeeScreen(
             modifier = Modifier.padding(paddingValues)
         ) {
             composable(KrakatauAppScreens.DashboardScreen.route) {
-                DashboardEmployeeScreen(navigator = navigator)
+                DashboardEmployeeScreen()
             }
             composable(KrakatauAppScreens.MaintenanceScreen.route) {
                 ListMaintenanceEmployeeScreen(navigator = navigator)

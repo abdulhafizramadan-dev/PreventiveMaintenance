@@ -37,6 +37,7 @@ import com.alifalpian.krakatauapp.domain.model.Resource
 import com.alifalpian.krakatauapp.domain.model.User
 import com.alifalpian.krakatauapp.ui.theme.PreventiveMaintenanceTheme
 import com.alifalpian.krakatauapp.ui.theme.ShimmerColor
+import com.alifalpian.krakatauapp.util.titleCase
 import com.valentinilk.shimmer.shimmer
 
 @Composable
@@ -45,10 +46,8 @@ fun KrakatauDashboardTopAppBar(
     user: Resource<User> = Resource.Idling
 ) {
     when (user) {
-        Resource.Idling -> {}
-        Resource.Loading,
-        is Resource.Error -> KrakatauDashboardTopAppBarLoading()
         is Resource.Success -> KrakatauDashboardTopAppBarContent(user = user.data, modifier = modifier)
+        else -> KrakatauDashboardTopAppBarLoading()
     }
 }
 
@@ -111,7 +110,7 @@ private fun KrakatauDashboardTopAppBarContent(
                 verticalAlignment = Alignment.CenterVertically
             ) {
                 Text(
-                    text = user.type,
+                    text = user.type.titleCase(),
                     lineHeight = 2.33.em,
                     style = TextStyle(fontSize = 12.sp)
                 )

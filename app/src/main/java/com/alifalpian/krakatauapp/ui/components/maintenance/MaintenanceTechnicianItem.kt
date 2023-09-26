@@ -38,15 +38,10 @@ import com.alifalpian.krakatauapp.ui.theme.PreventiveMaintenanceTheme
 import com.alifalpian.krakatauapp.util.toMaintenanceDateFormat
 import com.valentinilk.shimmer.shimmer
 
-enum class MaintenanceTechnicianItemType {
-    AllEquipment, PendingApproval, Approved
-}
-
 @Composable
 fun MaintenanceTechnicianItem(
     modifier: Modifier = Modifier,
     equipment: Equipment,
-    type: MaintenanceTechnicianItemType = MaintenanceTechnicianItemType.AllEquipment,
     onClicked: (Equipment) -> Unit = {}
 ) {
     Row(
@@ -73,6 +68,15 @@ fun MaintenanceTechnicianItem(
                 fontWeight = FontWeight.Medium,
                 letterSpacing = 0.1.sp
             )
+            if (equipment.technicianName.isNotEmpty()) {
+                Spacer(modifier = Modifier.width(8.dp))
+                Text(
+                    text = "Teknisi : ${equipment.technicianName}",
+                    lineHeight = 1.67.em,
+                    fontSize = 12.sp,
+                    letterSpacing = 0.1.sp
+                )
+            }
         }
         Spacer(modifier = Modifier.width(8.dp))
         Column(

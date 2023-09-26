@@ -25,9 +25,9 @@ class MaintenanceFormTechnicianViewModel @Inject constructor(
         it.submitMaintenance is Resource.Loading
     }
 
-    fun getEquipment(equipmentId: String) {
+    fun getEquipment(equipmentDocumentId: String) {
         viewModelScope.launch {
-            homeUseCase.getEquipment(equipmentId).collect { resource ->
+            homeUseCase.getEquipment(equipmentDocumentId).collect { resource ->
                 maintenanceFormTechnicianUiState.value = maintenanceFormTechnicianUiState.value.copy(
                     equipment = resource
                 )
@@ -99,22 +99,25 @@ class MaintenanceFormTechnicianViewModel @Inject constructor(
         equipmentDocumentId: String,
         maintenanceCheckPointType: String,
         technicianDocumentId: String,
+        employeeDocumentId: String,
         equipmentType: String,
         maintenanceCheckPoints: List<MaintenanceCheckPoint>,
         maintenanceTools: List<MaintenanceTools>,
         maintenanceSafetyUse: List<MaintenanceSafetyUse>,
-        equipmentWillMaintenanceDocumentId: String
+        equipmentWillMaintenanceDocumentId: String,
     ) {
         viewModelScope.launch {
             homeUseCase.submitMaintenance(
                 equipmentDocumentId = equipmentDocumentId,
                 maintenanceCheckPointType = maintenanceCheckPointType,
                 technicianDocumentId = technicianDocumentId,
+                employeeDocumentId = employeeDocumentId,
                 equipmentType = equipmentType,
                 maintenanceCheckPoints = maintenanceCheckPoints,
                 maintenanceTools = maintenanceTools,
                 maintenanceSafetyUse = maintenanceSafetyUse,
-                equipmentWillMaintenanceDocumentId = equipmentWillMaintenanceDocumentId
+                equipmentWillMaintenanceDocumentId = equipmentWillMaintenanceDocumentId,
+                planDuration = maintenanceFormTechnicianUiState.value.planDuration
             ).collect { resource ->
                 maintenanceFormTechnicianUiState.value = maintenanceFormTechnicianUiState.value.copy(
                     submitMaintenance = resource

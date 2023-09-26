@@ -2,10 +2,6 @@ package com.alifalpian.krakatauapp.domain.model
 
 import com.alifalpian.krakatauapp.util.emptyString
 
-enum class UserType {
-    Technician, Employee
-}
-
 data class User(
     val documentId: String = emptyString(),
     val type: String = emptyString(),

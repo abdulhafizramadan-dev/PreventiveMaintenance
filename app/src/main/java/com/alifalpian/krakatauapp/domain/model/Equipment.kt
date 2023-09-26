@@ -17,4 +17,5 @@ data class Equipment(
     val equipmentWillMaintenanceDocumentId: String = emptyString(),
     val maintenanceHistoryDocumentId: String = emptyString(),
     val maintenanceStatus: String = emptyString(),
+    val technicianName: String = emptyString(),
 )

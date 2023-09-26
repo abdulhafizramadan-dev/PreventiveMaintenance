@@ -32,10 +32,8 @@ fun MaintenanceFormHeader(
     equipment: Resource<Equipment>
 ) {
     when (equipment) {
-        Resource.Idling -> {}
-        is Resource.Error -> {}
-        Resource.Loading -> MaintenanceFormHeaderLoading(modifier)
         is Resource.Success -> MaintenanceFormHeaderSuccess(equipment = equipment.data, modifier = modifier)
+        else -> MaintenanceFormHeaderLoading(modifier)
     }
 }
 

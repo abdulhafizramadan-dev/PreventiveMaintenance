@@ -7,6 +7,7 @@ import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
+import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.width
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Surface
@@ -17,36 +18,39 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
-import com.alifalpian.krakatauapp.domain.model.Equipment
+import com.alifalpian.krakatauapp.domain.model.MaintenanceHistory
 import com.alifalpian.krakatauapp.domain.model.Resource
 import com.alifalpian.krakatauapp.domain.model.User
 import com.alifalpian.krakatauapp.ui.theme.PreventiveMaintenanceTheme
 import com.alifalpian.krakatauapp.ui.theme.ShimmerColor
+import com.alifalpian.krakatauapp.util.printHour
 import com.alifalpian.krakatauapp.util.toMaintenanceDateFormat
 import com.valentinilk.shimmer.shimmer
+import java.util.Date
 
 @Composable
-fun MaintenanceHeader(
+fun MaintenanceTechnicianHeader(
     modifier: Modifier = Modifier,
-    equipment: Resource<Equipment>,
-    user: Resource<User>,
+    technician: Resource<User>,
+    maintenanceHistory: Resource<MaintenanceHistory>
 ) {
-    if (equipment is Resource.Loading || user is Resource.Loading) {
-        LoadingMaintenanceHeader(
+    if (technician is Resource.Loading || maintenanceHistory is Resource.Loading) {
+        LoadingMaintenanceTechnicianHeader(
             modifier = modifier
         )
     }
-    if (equipment is Resource.Success && user is Resource.Success) {
-        SuccessMaintenanceHeader(
-            equipment = equipment.data,
-            user = user.data,
-            modifier = modifier
+    if (technician is Resource.Success && maintenanceHistory is Resource.Success) {
+        SuccessMaintenanceTechnicianHeader(
+            modifier = modifier,
+            technician = technician.data,
+            plantDuration = maintenanceHistory.data.plantDuration,
+            actualDuration = maintenanceHistory.data.actualDuration
         )
     }
 }
 
 @Composable
-private fun LoadingMaintenanceHeader(
+private fun LoadingMaintenanceTechnicianHeader(
     modifier: Modifier = Modifier
 ) {
     Column(
@@ -82,45 +86,28 @@ private fun LoadingMaintenanceHeader(
                 .height(16.dp)
                 .background(ShimmerColor)
         )
-        Spacer(modifier = Modifier.height(16.dp))
-        Box(
-            modifier = Modifier
-                .fillMaxWidth()
-                .height(16.dp)
-                .background(ShimmerColor)
-        )
-        Spacer(modifier = Modifier.height(16.dp))
-        Box(
-            modifier = Modifier
-                .fillMaxWidth()
-                .height(16.dp)
-                .background(ShimmerColor)
-        )
     }
 }
 
 @Composable
-private fun SuccessMaintenanceHeader(
+private fun SuccessMaintenanceTechnicianHeader(
     modifier: Modifier = Modifier,
-    equipment: Equipment,
-    user: User
+    technician: User,
+    plantDuration: Date,
+    actualDuration: Date
 ) {
     Column(
         modifier = Modifier
             .background(MaterialTheme.colorScheme.background)
             .then(modifier)
     ) {
-        MaintenanceTechnicianHeaderItem(label = "ORDER", value = equipment.equipment)
+        MaintenanceTechnicianHeaderItem(label = "TEKNISI", value = technician.name)
         Spacer(modifier = Modifier.height(8.dp))
-        MaintenanceTechnicianHeaderItem(label = "TANGGAL", value = equipment.date.toMaintenanceDateFormat())
+        MaintenanceTechnicianHeaderItem(label = "TGL DILAKUKAN", value = actualDuration.toMaintenanceDateFormat())
         Spacer(modifier = Modifier.height(8.dp))
-        MaintenanceTechnicianHeaderItem(label = "INTERVAL", value = equipment.interval)
+        MaintenanceTechnicianHeaderItem(label = "JAM MULAI", value = plantDuration.printHour())
         Spacer(modifier = Modifier.height(8.dp))
-        MaintenanceTechnicianHeaderItem(label = "PELAKSANA", value = equipment.execution)
-        Spacer(modifier = Modifier.height(8.dp))
-        MaintenanceTechnicianHeaderItem(label = "USER", value = user.name)
-        Spacer(modifier = Modifier.height(8.dp))
-        MaintenanceTechnicianHeaderItem(label = "LOKASI", value = equipment.location)
+        MaintenanceTechnicianHeaderItem(label = "JAM SELESAI", value = actualDuration.printHour())
     }
 }
 
@@ -157,21 +144,16 @@ private fun MaintenanceTechnicianHeaderItem(
 
 @Preview
 @Composable
-fun PreviewMaintenanceHeader() {
+fun PreviewMaintenanceTechnicianHeader() {
     PreventiveMaintenanceTheme {
         Surface {
-            val equipment = Equipment(
-                documentId = "user123",
-                equipment = "2210043175",
-                interval = "4 MON",
-                execution = "PG IT",
-                location = "Ruang Staff SEKPER (WTP)",
-                description = "LAPTOP DELL LATITUDE 3420 SKP4",
+            val technician = User(
+                name = "Hasan Maulana Jhonson"
             )
-//            MaintenanceHeader(
-//                equipment = Resource.Loading,
+//            MaintenanceTechnicianHeader(
 //                modifier = Modifier.fillMaxWidth()
-//                    .padding(16.dp)
+//                    .padding(16.dp),
+//                technician = Resource.Success(technician),
 //            )
         }
     }

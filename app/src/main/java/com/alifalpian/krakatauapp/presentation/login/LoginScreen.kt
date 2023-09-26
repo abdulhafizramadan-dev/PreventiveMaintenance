@@ -1,6 +1,5 @@
 package com.alifalpian.krakatauapp.presentation.login
 
-import android.util.Log
 import androidx.compose.foundation.ExperimentalFoundationApi
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.layout.Arrangement
@@ -29,7 +28,6 @@ import androidx.hilt.navigation.compose.hiltViewModel
 import com.alifalpian.krakatauapp.R
 import com.alifalpian.krakatauapp.domain.model.Resource
 import com.alifalpian.krakatauapp.domain.model.User
-import com.alifalpian.krakatauapp.domain.model.UserType
 import com.alifalpian.krakatauapp.presentation.destinations.HomeEmployeeScreenDestination
 import com.alifalpian.krakatauapp.presentation.destinations.HomeTechnicianScreenDestination
 import com.alifalpian.krakatauapp.presentation.destinations.LoginScreenDestination
@@ -65,14 +63,15 @@ fun LoginScreen(
     val password = loginUiState.password
     val loginResult = loginUiState.loginResult
     val loggedUser = loginUiState.loggedUser
-    val loadingState = loginUiState.loadingState
     val loginButtonEnabled by loginViewModel.loginButtonEnabled.collectAsState(initial = false)
+
+    val loginLoadingState by loginViewModel.loginLoadingState.collectAsState(initial = false)
+
+    var uid by remember { mutableStateOf("") }
 
     val infoDialogUseCase = rememberUseCaseState()
 
-    var messageDialog: String by remember {
-        mutableStateOf("")
-    }
+    var messageDialog: String by remember { mutableStateOf("") }
 
     val navigateToHomeScreen: (User) -> Unit = { user ->
         if (user.type.contains("teknisi", true)) {
@@ -95,33 +94,23 @@ fun LoginScreen(
     }
 
     LaunchedEffect(key1 = loginResult) {
-        when (loginResult) {
-            Resource.Idling -> {}
-            Resource.Loading -> loginViewModel.onLoginLoadingState(true)
-            is Resource.Error -> {
-                loginViewModel.onLoginLoadingState(false)
-                messageDialog = loginResult.error.toString()
-                infoDialogUseCase.show()
-            }
-            is Resource.Success -> {
-                val uid = loginResult.data.user?.uid ?: ""
-                loginViewModel.getUser(uid)
-            }
+        if (loginResult is Resource.Error) {
+            messageDialog = loginResult.error.toString()
+            infoDialogUseCase.show()
+        }
+        if (loginResult is Resource.Success) {
+            uid = loginResult.data.user?.uid ?: ""
+            loginViewModel.getUser(uid)
         }
     }
 
     LaunchedEffect(key1 = loggedUser) {
-        when (loggedUser) {
-            Resource.Idling -> {}
-            Resource.Loading -> {}
-            is Resource.Error -> {
-                loginViewModel.onLoginLoadingState(false)
-                messageDialog = loggedUser.error.toString()
-                infoDialogUseCase.show()
-            }
-            is Resource.Success -> {
-                navigateToHomeScreen(loggedUser.data)
-            }
+        if (loggedUser is Resource.Error) {
+            messageDialog = loggedUser.error.toString()
+            infoDialogUseCase.show()
+        }
+        if (loggedUser is Resource.Success) {
+            navigateToHomeScreen(loggedUser.data)
         }
     }
 
@@ -175,7 +164,7 @@ fun LoginScreen(
                 title = "Login",
                 onClicked = signInWithEmailAndPassword,
                 enabled = loginButtonEnabled,
-                loading = loadingState
+                loading = loginLoadingState
             )
         }
     }

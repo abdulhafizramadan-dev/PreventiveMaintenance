@@ -8,7 +8,6 @@ import com.google.firebase.auth.AuthResult
 data class LoginUiState(
     val email: String = emptyString(),
     val password: String = emptyString(),
-    val loadingState: Boolean = false,
     val loginResult: Resource<AuthResult> = Resource.Idling,
     val loggedUser: Resource<User> = Resource.Idling
 )
