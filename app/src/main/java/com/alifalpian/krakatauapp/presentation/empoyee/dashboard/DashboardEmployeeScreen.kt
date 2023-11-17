@@ -27,6 +27,9 @@ import com.alifalpian.krakatauapp.domain.model.EmployeeDashboardEquipment
 import com.alifalpian.krakatauapp.domain.model.Equipment
 import com.alifalpian.krakatauapp.domain.model.Resource
 import com.alifalpian.krakatauapp.domain.model.User
+import com.alifalpian.krakatauapp.presentation.destinations.DashboardEmployeeScreenDestination
+import com.alifalpian.krakatauapp.presentation.destinations.HomeEmployeeScreenDestination
+import com.alifalpian.krakatauapp.presentation.destinations.HomeTechnicianScreenDestination
 import com.alifalpian.krakatauapp.presentation.destinations.LoginScreenDestination
 import com.alifalpian.krakatauapp.ui.components.dashboard.DashboardEmployeeEquipmentItem
 import com.alifalpian.krakatauapp.ui.components.krakatau.KrakatauDashboardTopAppBar
@@ -34,6 +37,11 @@ import com.alifalpian.krakatauapp.ui.components.maintenance.MaintenanceTechnicia
 import com.alifalpian.krakatauapp.ui.components.maintenance.ShimmerMaintenanceTechnicianItem
 import com.alifalpian.krakatauapp.ui.theme.PreventiveMaintenanceTheme
 import com.alifalpian.krakatauapp.util.emptyString
+import com.maxkeppeker.sheets.core.models.base.SelectionButton
+import com.maxkeppeker.sheets.core.models.base.rememberUseCaseState
+import com.maxkeppeler.sheets.info.InfoDialog
+import com.maxkeppeler.sheets.info.models.InfoBody
+import com.maxkeppeler.sheets.info.models.InfoSelection
 import com.ramcosta.composedestinations.annotation.Destination
 import com.ramcosta.composedestinations.navigation.DestinationsNavigator
 import com.ramcosta.composedestinations.navigation.EmptyDestinationsNavigator
@@ -44,6 +52,7 @@ import com.ramcosta.composedestinations.navigation.EmptyDestinationsNavigator
 @Composable
 fun DashboardEmployeeScreen(
     modifier: Modifier = Modifier,
+    navigator: DestinationsNavigator = EmptyDestinationsNavigator,
     viewModel: DashboardEmployeeViewModel = hiltViewModel()
 ) {
 
@@ -51,6 +60,19 @@ fun DashboardEmployeeScreen(
     val loggedUser = dashboardEmployeeUiState.loggedUser
     val user = dashboardEmployeeUiState.user
     val equipments = dashboardEmployeeUiState.equipments
+    val signOut = dashboardEmployeeUiState.signOut
+
+    val logoutDialogUseCase = rememberUseCaseState()
+
+    val navigateToLoginScreen: () -> Unit = {
+        navigator.navigate(LoginScreenDestination()) {
+            popUpTo(HomeEmployeeScreenDestination.route) {
+                inclusive = true
+            }
+        }
+    }
+
+    val onEquipmentClicked: (Equipment) -> Unit = {}
 
     LaunchedEffect(key1 = Unit) {
         viewModel.getLoggedUser()
@@ -63,11 +85,33 @@ fun DashboardEmployeeScreen(
         }
     }
 
-    val onEquipmentClicked: (Equipment) -> Unit = {}
+    LaunchedEffect(key1 = signOut) {
+        if (signOut is Resource.Success) {
+            navigateToLoginScreen()
+        }
+    }
+
+    InfoDialog(
+        state = logoutDialogUseCase,
+        selection = InfoSelection(
+            positiveButton = SelectionButton(
+                text = "Keluar"
+            ),
+            onPositiveClick = viewModel::signOut,
+            negativeButton = SelectionButton(
+                text = "Batal"
+            ),
+            onNegativeClick = logoutDialogUseCase::finish
+        ),
+        body = InfoBody.Default(bodyText = "Apakah kamu yakin keluar dari aplikasi?")
+    )
 
     Scaffold(
         topBar = {
-            KrakatauDashboardTopAppBar(user = user)
+            KrakatauDashboardTopAppBar(
+                user = user,
+                onLogoutClicked = logoutDialogUseCase::show
+            )
         },
         modifier = modifier
     ) { paddingValues ->

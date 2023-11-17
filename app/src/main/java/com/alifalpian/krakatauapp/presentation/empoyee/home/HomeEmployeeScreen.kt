@@ -53,7 +53,7 @@ fun HomeEmployeeScreen(
             modifier = Modifier.padding(paddingValues)
         ) {
             composable(KrakatauAppScreens.DashboardScreen.route) {
-                DashboardEmployeeScreen()
+                DashboardEmployeeScreen(navigator = navigator)
             }
             composable(KrakatauAppScreens.MaintenanceScreen.route) {
                 ListMaintenanceEmployeeScreen(navigator = navigator)

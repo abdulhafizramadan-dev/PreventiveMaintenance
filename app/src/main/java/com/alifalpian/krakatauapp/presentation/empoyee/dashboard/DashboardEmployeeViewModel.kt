@@ -3,6 +3,7 @@ package com.alifalpian.krakatauapp.presentation.empoyee.dashboard
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.alifalpian.krakatauapp.domain.usecase.HomeUseCase
+import com.alifalpian.krakatauapp.domain.usecase.LoginUseCase
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.launch
@@ -10,7 +11,8 @@ import javax.inject.Inject
 
 @HiltViewModel
 class DashboardEmployeeViewModel @Inject constructor(
-    private val homeUseCase: HomeUseCase
+    private val homeUseCase: HomeUseCase,
+    private val loginUseCase: LoginUseCase
 ) : ViewModel() {
 
     var dashboardEmployeeUiState = MutableStateFlow(DashboardEmployeeUiState())
@@ -41,6 +43,16 @@ class DashboardEmployeeViewModel @Inject constructor(
             homeUseCase.getEmployeeEquipments(uid).collect { resource ->
                 dashboardEmployeeUiState.value = dashboardEmployeeUiState.value.copy(
                     equipments = resource
+                )
+            }
+        }
+    }
+
+    fun signOut() {
+        viewModelScope.launch {
+            loginUseCase.signOut().collect { resource ->
+                dashboardEmployeeUiState.value = dashboardEmployeeUiState.value.copy(
+                    signOut = resource
                 )
             }
         }

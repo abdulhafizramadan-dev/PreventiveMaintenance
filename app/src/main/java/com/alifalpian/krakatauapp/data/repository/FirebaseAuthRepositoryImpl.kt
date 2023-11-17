@@ -30,4 +30,9 @@ class FirebaseAuthRepositoryImpl @Inject constructor(
         emit(result)
     }
 
+    override fun signOut(): Flow<Resource<Unit>> = flow {
+        emit(Resource.Loading)
+        val result = firebaseAuth.signOut()
+        emit(Resource.Success(result))
+    }
 }

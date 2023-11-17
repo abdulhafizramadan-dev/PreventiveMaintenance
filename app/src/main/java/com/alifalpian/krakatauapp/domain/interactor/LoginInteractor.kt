@@ -26,4 +26,8 @@ class LoginInteractor @Inject constructor(
     override fun getUser(uid: String): Flow<Resource<User>> {
         return firebaseFirestoreRepository.getUser(uid)
     }
+
+    override fun signOut(): Flow<Resource<Unit>> {
+        return firebaseAuthRepository.signOut()
+    }
 }

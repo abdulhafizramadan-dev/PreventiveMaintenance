@@ -11,4 +11,6 @@ interface LoginUseCase {
 
     fun getUser(uid: String): Flow<Resource<User>>
 
+    fun signOut(): Flow<Resource<Unit>>
+
 }

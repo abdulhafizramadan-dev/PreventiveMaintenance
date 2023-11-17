@@ -11,4 +11,6 @@ interface FirebaseAuthRepository {
 
     fun isUserLogged(): Flow<FirebaseUser?>
 
+    fun signOut(): Flow<Resource<Unit>>
+
 }

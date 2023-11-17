@@ -9,4 +9,5 @@ data class DashboardTechnicianUiState(
     val loggedUser: FirebaseUser? = null,
     val user: Resource<User> = Resource.Idling,
     val dashboardEquipments: Resource<List<TechnicianDashboardEquipment>> = Resource.Idling,
+    val signOut: Resource<Unit> = Resource.Idling
 )

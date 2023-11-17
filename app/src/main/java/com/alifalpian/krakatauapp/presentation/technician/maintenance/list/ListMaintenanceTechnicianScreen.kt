@@ -50,7 +50,7 @@ import java.time.LocalDate
 
 private const val TAG = "ListMaintenanceTechnici"
 
-@RootNavGraph(start = true)
+//@RootNavGraph(start = true)
 @Destination
 @ExperimentalFoundationApi
 @ExperimentalMaterial3Api

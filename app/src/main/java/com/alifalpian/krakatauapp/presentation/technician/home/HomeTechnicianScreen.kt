@@ -48,7 +48,7 @@ fun HomeTechnicianScreen(
             modifier = Modifier.padding(paddingValues)
         ) {
             composable(KrakatauAppScreens.DashboardScreen.route) {
-                DashboardTechnicianScreen()
+                DashboardTechnicianScreen(navigator = navigator)
             }
             composable(KrakatauAppScreens.MaintenanceScreen.route) {
                 ListMaintenanceTechnicianScreen(navigator = navigator)

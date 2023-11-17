@@ -48,7 +48,7 @@ import com.ramcosta.composedestinations.navigation.EmptyDestinationsNavigator
 private const val TAG = "LoginScreen"
 
 @ExperimentalFoundationApi
-//@RootNavGraph(start = true)
+@RootNavGraph(start = true)
 @Destination
 @ExperimentalMaterial3Api
 @Composable

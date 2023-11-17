@@ -24,7 +24,7 @@ class LoginViewModel @Inject constructor(
     }
 
     val loginLoadingState get() = loginUiState.map {
-        it.loginResult is Resource.Loading
+        it.loginResult is Resource.Loading || it.loginResult is Resource.Success
     }
 
     fun onEmailChange(email: String) {
