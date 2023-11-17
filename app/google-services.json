@@ -1,0 +1,29 @@
+{
+  "project_info": {
+    "project_number": "74012084951",
+    "project_id": "preventive-maintenance-95eb9",
+    "storage_bucket": "preventive-maintenance-95eb9.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:74012084951:android:7cba8c40a74a3564c0fe92",
+        "android_client_info": {
+          "package_name": "com.alifalpian.krakatauapp"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyBsga0yiWQLNAUVsX6nU-Xi9DoVqb8_Bus"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}

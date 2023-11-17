@@ -19,7 +19,6 @@ import com.alifalpian.krakatauapp.presentation.empoyee.maintenance.list.ListMain
 import com.alifalpian.krakatauapp.ui.components.krakatau.KrakatauNavigationBar
 import com.alifalpian.krakatauapp.ui.navigation.KrakatauAppScreens
 import com.alifalpian.krakatauapp.ui.theme.PreventiveMaintenanceTheme
-import com.alifalpian.krakatauapp.util.emptyString
 import com.ramcosta.composedestinations.annotation.Destination
 import com.ramcosta.composedestinations.navigation.DestinationsNavigator
 import com.ramcosta.composedestinations.navigation.EmptyDestinationsNavigator

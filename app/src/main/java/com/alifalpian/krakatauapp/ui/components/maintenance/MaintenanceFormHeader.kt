@@ -98,7 +98,7 @@ private fun MaintenanceFormHeaderSuccess(
             modifier = Modifier.fillMaxWidth()
         )
         Spacer(modifier = Modifier.height(12.dp))
-        MaintenanceContentRowItem(label = "EQUIPMENT", text = equipment.equipment)
+        MaintenanceContentRowItem(label = "EQUIPMENT", text = equipment.equipment.toString())
         Spacer(modifier = Modifier.height(8.dp))
         MaintenanceContentRowItem(label = "ALAT/KODE", text = equipment.description)
         Spacer(modifier = Modifier.height(22.dp))

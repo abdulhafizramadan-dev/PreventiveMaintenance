@@ -1,6 +1,5 @@
 package com.alifalpian.krakatauapp.presentation.technician.maintenance.form
 
-import android.util.Log
 import androidx.compose.animation.animateContentSize
 import androidx.compose.foundation.ExperimentalFoundationApi
 import androidx.compose.foundation.background
@@ -20,7 +19,6 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
-import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.ui.Alignment
@@ -30,11 +28,10 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.window.DialogProperties
 import androidx.hilt.navigation.compose.hiltViewModel
+import com.alifalpian.krakatauapp.domain.model.MaintenanceSafetyUse
 import com.alifalpian.krakatauapp.domain.model.MaintenanceTools
 import com.alifalpian.krakatauapp.domain.model.Resource
-import com.alifalpian.krakatauapp.domain.model.MaintenanceSafetyUse
 import com.alifalpian.krakatauapp.presentation.destinations.HomeTechnicianScreenDestination
-import com.alifalpian.krakatauapp.presentation.destinations.MaintenanceFormTechnicianScreenDestination
 import com.alifalpian.krakatauapp.ui.components.krakatau.KrakatauButton
 import com.alifalpian.krakatauapp.ui.components.krakatau.KrakatauTabRow
 import com.alifalpian.krakatauapp.ui.components.krakatau.KrakatauTopAppBar
@@ -53,7 +50,6 @@ import com.maxkeppeker.sheets.core.models.CoreSelection
 import com.maxkeppeker.sheets.core.models.base.SelectionButton
 import com.maxkeppeker.sheets.core.models.base.rememberUseCaseState
 import com.ramcosta.composedestinations.annotation.Destination
-import com.ramcosta.composedestinations.annotation.RootNavGraph
 import com.ramcosta.composedestinations.navigation.DestinationsNavigator
 import com.ramcosta.composedestinations.navigation.EmptyDestinationsNavigator
 

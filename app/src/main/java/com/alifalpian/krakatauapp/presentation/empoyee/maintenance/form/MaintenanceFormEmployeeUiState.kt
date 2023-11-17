@@ -3,9 +3,9 @@ package com.alifalpian.krakatauapp.presentation.empoyee.maintenance.form
 import com.alifalpian.krakatauapp.domain.model.Equipment
 import com.alifalpian.krakatauapp.domain.model.MaintenanceCheckPoint
 import com.alifalpian.krakatauapp.domain.model.MaintenanceHistory
+import com.alifalpian.krakatauapp.domain.model.MaintenanceSafetyUse
 import com.alifalpian.krakatauapp.domain.model.MaintenanceTools
 import com.alifalpian.krakatauapp.domain.model.Resource
-import com.alifalpian.krakatauapp.domain.model.MaintenanceSafetyUse
 import com.alifalpian.krakatauapp.domain.model.User
 
 data class MaintenanceFormEmployeeUiState(

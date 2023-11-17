@@ -31,7 +31,6 @@ import com.alifalpian.krakatauapp.ui.components.dashboard.DashboardTechnicianEqu
 import com.alifalpian.krakatauapp.ui.components.krakatau.KrakatauDashboardTopAppBar
 import com.alifalpian.krakatauapp.ui.components.maintenance.ShimmerMaintenanceTechnicianItem
 import com.alifalpian.krakatauapp.ui.theme.PreventiveMaintenanceTheme
-import com.alifalpian.krakatauapp.util.emptyString
 import com.maxkeppeker.sheets.core.models.base.SelectionButton
 import com.maxkeppeker.sheets.core.models.base.rememberUseCaseState
 import com.maxkeppeler.sheets.info.InfoDialog

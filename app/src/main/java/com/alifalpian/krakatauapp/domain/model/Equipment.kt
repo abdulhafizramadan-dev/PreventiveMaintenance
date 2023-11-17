@@ -5,7 +5,7 @@ import java.util.Date
 
 data class Equipment(
     val documentId: String = emptyString(),
-    val equipment: String = emptyString(),
+    val equipment: Long = 0L,
     val date: Date = Date(),
     val interval: String = emptyString(),
     val execution: String = emptyString(),

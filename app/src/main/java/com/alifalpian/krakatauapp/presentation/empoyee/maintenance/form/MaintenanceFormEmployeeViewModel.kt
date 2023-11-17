@@ -2,13 +2,9 @@ package com.alifalpian.krakatauapp.presentation.empoyee.maintenance.form
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import com.alifalpian.krakatauapp.domain.model.MaintenanceCheckPoint
-import com.alifalpian.krakatauapp.domain.model.MaintenanceSafetyUse
-import com.alifalpian.krakatauapp.domain.model.MaintenanceTools
 import com.alifalpian.krakatauapp.domain.model.Resource
 import com.alifalpian.krakatauapp.domain.usecase.HomeUseCase
 import dagger.hilt.android.lifecycle.HiltViewModel
-import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.launch

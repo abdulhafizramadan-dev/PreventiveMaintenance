@@ -16,7 +16,6 @@ import androidx.compose.ui.unit.dp
 import com.alifalpian.krakatauapp.domain.model.MaintenanceEquipment
 import com.alifalpian.krakatauapp.ui.components.HistoryDateFilter
 import com.alifalpian.krakatauapp.ui.components.krakatau.KrakatauTopAppBar
-import com.alifalpian.krakatauapp.ui.components.maintenance.MaintenanceTechnicianItem
 import com.alifalpian.krakatauapp.ui.theme.PreventiveMaintenanceTheme
 import com.maxkeppeker.sheets.core.models.base.rememberUseCaseState
 import com.maxkeppeler.sheets.calendar.CalendarDialog

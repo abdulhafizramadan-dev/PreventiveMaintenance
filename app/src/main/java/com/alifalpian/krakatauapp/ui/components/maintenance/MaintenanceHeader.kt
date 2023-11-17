@@ -110,7 +110,7 @@ private fun SuccessMaintenanceHeader(
             .background(MaterialTheme.colorScheme.background)
             .then(modifier)
     ) {
-        MaintenanceTechnicianHeaderItem(label = "ORDER", value = equipment.equipment)
+        MaintenanceTechnicianHeaderItem(label = "ORDER", value = equipment.equipment.toString())
         Spacer(modifier = Modifier.height(8.dp))
         MaintenanceTechnicianHeaderItem(label = "TANGGAL", value = equipment.date.toMaintenanceDateFormat())
         Spacer(modifier = Modifier.height(8.dp))
@@ -162,7 +162,7 @@ fun PreviewMaintenanceHeader() {
         Surface {
             val equipment = Equipment(
                 documentId = "user123",
-                equipment = "2210043175",
+                equipment = 2210043175,
                 interval = "4 MON",
                 execution = "PG IT",
                 location = "Ruang Staff SEKPER (WTP)",

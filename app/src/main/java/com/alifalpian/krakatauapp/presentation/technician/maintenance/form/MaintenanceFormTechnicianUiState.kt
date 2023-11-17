@@ -3,12 +3,11 @@ package com.alifalpian.krakatauapp.presentation.technician.maintenance.form
 import com.alifalpian.krakatauapp.domain.model.Equipment
 import com.alifalpian.krakatauapp.domain.model.MaintenanceCheckPoint
 import com.alifalpian.krakatauapp.domain.model.MaintenanceHistory
+import com.alifalpian.krakatauapp.domain.model.MaintenanceSafetyUse
 import com.alifalpian.krakatauapp.domain.model.MaintenanceTools
 import com.alifalpian.krakatauapp.domain.model.Resource
-import com.alifalpian.krakatauapp.domain.model.MaintenanceSafetyUse
 import com.alifalpian.krakatauapp.domain.model.User
 import com.google.firebase.firestore.FieldValue
-import java.util.Date
 
 data class MaintenanceFormTechnicianUiState(
     val equipment: Resource<Equipment> = Resource.Loading,

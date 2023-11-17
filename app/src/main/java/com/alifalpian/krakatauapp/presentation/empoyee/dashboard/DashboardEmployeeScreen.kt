@@ -1,5 +1,6 @@
 package com.alifalpian.krakatauapp.presentation.empoyee.dashboard
 
+import android.util.Log
 import androidx.compose.foundation.ExperimentalFoundationApi
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
@@ -23,20 +24,14 @@ import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
-import com.alifalpian.krakatauapp.domain.model.EmployeeDashboardEquipment
 import com.alifalpian.krakatauapp.domain.model.Equipment
 import com.alifalpian.krakatauapp.domain.model.Resource
-import com.alifalpian.krakatauapp.domain.model.User
-import com.alifalpian.krakatauapp.presentation.destinations.DashboardEmployeeScreenDestination
 import com.alifalpian.krakatauapp.presentation.destinations.HomeEmployeeScreenDestination
-import com.alifalpian.krakatauapp.presentation.destinations.HomeTechnicianScreenDestination
 import com.alifalpian.krakatauapp.presentation.destinations.LoginScreenDestination
-import com.alifalpian.krakatauapp.ui.components.dashboard.DashboardEmployeeEquipmentItem
 import com.alifalpian.krakatauapp.ui.components.krakatau.KrakatauDashboardTopAppBar
 import com.alifalpian.krakatauapp.ui.components.maintenance.MaintenanceTechnicianItem
 import com.alifalpian.krakatauapp.ui.components.maintenance.ShimmerMaintenanceTechnicianItem
 import com.alifalpian.krakatauapp.ui.theme.PreventiveMaintenanceTheme
-import com.alifalpian.krakatauapp.util.emptyString
 import com.maxkeppeker.sheets.core.models.base.SelectionButton
 import com.maxkeppeker.sheets.core.models.base.rememberUseCaseState
 import com.maxkeppeler.sheets.info.InfoDialog
@@ -82,6 +77,16 @@ fun DashboardEmployeeScreen(
         if (loggedUser != null) {
             viewModel.getUser(loggedUser.uid)
             viewModel.getEmployeeEquipments(loggedUser.uid)
+        }
+    }
+
+    LaunchedEffect(key1 = equipments) {
+        when (equipments) {
+            Resource.Empty -> {}
+            is Resource.Error -> Log.d("TAG", "DashboardEmployeeScreen: Error = ${equipments.error}")
+            Resource.Idling -> {}
+            Resource.Loading -> Log.d("TAG", "DashboardEmployeeScreen: Loading")
+            is Resource.Success -> Log.d("TAG", "DashboardEmployeeScreen: Success = ${equipments.data}")
         }
     }
 

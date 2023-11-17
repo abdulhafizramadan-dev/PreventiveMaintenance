@@ -10,7 +10,6 @@ import com.alifalpian.krakatauapp.domain.usecase.HomeUseCase
 import com.alifalpian.krakatauapp.domain.usecase.LoginUseCase
 import dagger.Binds
 import dagger.Module
-import dagger.Provides
 import dagger.hilt.InstallIn
 import dagger.hilt.components.SingletonComponent
 import javax.inject.Singleton

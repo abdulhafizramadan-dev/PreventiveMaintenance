@@ -68,7 +68,7 @@ class FirebaseFirestoreRepositoryImpl @Inject constructor(
         val equipment = firestore.collection("equipments").document(equipmentDocumentId).get().await().let {
             Equipment(
                 documentId = it.id,
-                equipment = it.getString("equipment") ?: emptyString(),
+                equipment = it.getLong("equipment") ?: 0L,
                 date = it.getDate("date") ?: Date(),
                 interval = it.getString("interval") ?: emptyString(),
                 execution = it.getString("execution") ?: emptyString(),
@@ -90,7 +90,7 @@ class FirebaseFirestoreRepositoryImpl @Inject constructor(
         val equipments = firestore.collection("equipments").get().await().map {
             Equipment(
                 documentId = it.id,
-                equipment = it.getString("equipment") ?: emptyString(),
+                equipment = it.getLong("equipment") ?: 0L,
                 date = it.getDate("date") ?: Date(),
                 interval = it.getString("interval") ?: emptyString(),
                 execution = it.getString("execution") ?: emptyString(),
@@ -129,7 +129,7 @@ class FirebaseFirestoreRepositoryImpl @Inject constructor(
             val equipmentSnapshot = firestore.collection("equipments").whereEqualTo("equipment", equipmentId).limit(1).get().await().first()
             val equipment = Equipment(
                 documentId = equipmentSnapshot.id,
-                equipment = equipmentSnapshot.getString("equipment") ?: emptyString(),
+                equipment = equipmentSnapshot.getLong("equipment") ?: 0L,
                 date = equipmentSnapshot.getDate("date") ?: Date(),
                 interval = equipmentSnapshot.getString("interval") ?: emptyString(),
                 execution = equipmentSnapshot.getString("execution") ?: emptyString(),
@@ -178,7 +178,7 @@ class FirebaseFirestoreRepositoryImpl @Inject constructor(
                 val equipmentSnapshot = firestore.collection("equipments").document(equipmentDocumentId).get().await()
                 val equipment = Equipment(
                     documentId = equipmentSnapshot.id,
-                    equipment = equipmentSnapshot.getString("equipment") ?: emptyString(),
+                    equipment = equipmentSnapshot.getLong("equipment") ?: 0L,
                     date = maintenanceHistory.date,
                     interval = equipmentSnapshot.getString("interval") ?: emptyString(),
                     execution = equipmentSnapshot.getString("execution") ?: emptyString(),
@@ -232,7 +232,7 @@ class FirebaseFirestoreRepositoryImpl @Inject constructor(
                 val technicianSnapshot = firestore.collection("users").document(technicianDocumentId).get().await()
                 val equipment = Equipment(
                     documentId = equipmentSnapshot.id,
-                    equipment = equipmentSnapshot.getString("equipment") ?: emptyString(),
+                    equipment = equipmentSnapshot.getLong("equipment") ?: 0L,
                     date = maintenanceHistory.date,
                     interval = equipmentSnapshot.getString("interval") ?: emptyString(),
                     execution = equipmentSnapshot.getString("execution") ?: emptyString(),
@@ -286,7 +286,7 @@ class FirebaseFirestoreRepositoryImpl @Inject constructor(
                 val technicianSnapshot = firestore.collection("users").document(technicianDocumentId).get().await()
                 val equipment = Equipment(
                     documentId = equipmentSnapshot.id,
-                    equipment = equipmentSnapshot.getString("equipment") ?: emptyString(),
+                    equipment = equipmentSnapshot.getLong("equipment") ?: 0L,
                     date = maintenanceHistory.date,
                     interval = equipmentSnapshot.getString("interval") ?: emptyString(),
                     execution = equipmentSnapshot.getString("execution") ?: emptyString(),
@@ -488,7 +488,7 @@ class FirebaseFirestoreRepositoryImpl @Inject constructor(
         val equipments = firestore.collection("equipments").whereEqualTo("uid", uid).get().await().map {
             val equipment = Equipment(
                 documentId = it.id,
-                equipment = it.getString("equipment") ?: emptyString(),
+                equipment = it.getLong("equipment") ?: 0L,
                 date = it.getDate("date") ?: Date(),
                 interval = it.getString("interval") ?: emptyString(),
                 execution = it.getString("execution") ?: emptyString(),

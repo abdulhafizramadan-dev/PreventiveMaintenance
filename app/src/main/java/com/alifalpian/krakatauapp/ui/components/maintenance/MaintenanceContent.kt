@@ -2,12 +2,10 @@ package com.alifalpian.krakatauapp.ui.components.maintenance
 
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Column
-import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
-import androidx.compose.foundation.layout.width
 import androidx.compose.material3.Divider
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Surface
@@ -22,7 +20,6 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.alifalpian.krakatauapp.domain.model.Equipment
-import com.alifalpian.krakatauapp.domain.model.MaintenanceEquipment
 import com.alifalpian.krakatauapp.domain.model.MaintenanceCheckPoint
 import com.alifalpian.krakatauapp.domain.model.Resource
 import com.alifalpian.krakatauapp.ui.components.krakatau.KrakatauOutlinedTextField
@@ -143,7 +140,7 @@ fun PreviewMaintenanceContent() {
             val equipment = Resource.Success(
                 Equipment(
                     documentId = "12319814917",
-                    equipment = "2210043175",
+                    equipment = 2210043175,
                     interval = "4 MON",
                     execution = "PG IT",
                     location = "Ruang Staff SEKPER (WTP)",
