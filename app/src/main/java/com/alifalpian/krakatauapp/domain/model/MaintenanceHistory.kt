@@ -1,7 +1,7 @@
 package com.alifalpian.krakatauapp.domain.model
 
 import com.alifalpian.krakatauapp.util.emptyString
-import java.util.Date
+import com.google.firebase.Timestamp
 
 data class MaintenanceHistory(
     val documentId: String = emptyString(),
@@ -10,9 +10,9 @@ data class MaintenanceHistory(
     val maintenanceCheckPoint: String = emptyString(),
     val equipmentType: String = emptyString(),
     val equipmentDocumentId: String = emptyString(),
-    val date: Date = Date(),
+    val date: Timestamp = Timestamp.now(),
     val maintenanceCheckPointHistoryDocumentId: String = emptyString(),
     val status: String = emptyString(),
-    val plantDuration: Date = Date(),
-    val actualDuration: Date = Date()
+    val plantDuration: Timestamp = Timestamp.now(),
+    val actualDuration: Timestamp = Timestamp.now()
 )

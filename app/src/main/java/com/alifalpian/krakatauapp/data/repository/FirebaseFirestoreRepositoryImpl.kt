@@ -12,6 +12,7 @@ import com.alifalpian.krakatauapp.domain.model.User
 import com.alifalpian.krakatauapp.domain.repository.FirebaseFirestoreRepository
 import com.alifalpian.krakatauapp.util.emptyString
 import com.alifalpian.krakatauapp.util.titleCase
+import com.google.firebase.Timestamp
 import com.google.firebase.firestore.FieldValue
 import com.google.firebase.firestore.FirebaseFirestore
 import kotlinx.coroutines.delay
@@ -19,7 +20,6 @@ import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.catch
 import kotlinx.coroutines.flow.flow
 import kotlinx.coroutines.tasks.await
-import java.util.Date
 import java.util.UUID
 import javax.inject.Inject
 import javax.inject.Singleton
@@ -69,7 +69,7 @@ class FirebaseFirestoreRepositoryImpl @Inject constructor(
             Equipment(
                 documentId = it.id,
                 equipment = it.getLong("equipment") ?: 0L,
-                date = it.getDate("date") ?: Date(),
+                date = it.getTimestamp("date") ?: Timestamp.now(),
                 interval = it.getString("interval") ?: emptyString(),
                 execution = it.getString("execution") ?: emptyString(),
                 location = it.getString("location") ?: emptyString(),
@@ -91,7 +91,7 @@ class FirebaseFirestoreRepositoryImpl @Inject constructor(
             Equipment(
                 documentId = it.id,
                 equipment = it.getLong("equipment") ?: 0L,
-                date = it.getDate("date") ?: Date(),
+                date = it.getTimestamp("date") ?: Timestamp.now(),
                 interval = it.getString("interval") ?: emptyString(),
                 execution = it.getString("execution") ?: emptyString(),
                 location = it.getString("location") ?: emptyString(),
@@ -125,12 +125,12 @@ class FirebaseFirestoreRepositoryImpl @Inject constructor(
         emit(Resource.Loading)
         val equipmentsWillBeMaintenance = firestore.collection("equipment_will_maintenance").whereEqualTo("technician_document_id", technicianDocumentId).get().await()
         val equipments = equipmentsWillBeMaintenance.map {
-            val equipmentId = it.getString("equipment")
+            val equipmentId = it.getLong("equipment")
             val equipmentSnapshot = firestore.collection("equipments").whereEqualTo("equipment", equipmentId).limit(1).get().await().first()
             val equipment = Equipment(
                 documentId = equipmentSnapshot.id,
                 equipment = equipmentSnapshot.getLong("equipment") ?: 0L,
-                date = equipmentSnapshot.getDate("date") ?: Date(),
+                date = equipmentSnapshot.getTimestamp("date") ?: Timestamp.now(),
                 interval = equipmentSnapshot.getString("interval") ?: emptyString(),
                 execution = equipmentSnapshot.getString("execution") ?: emptyString(),
                 location = equipmentSnapshot.getString("location") ?: emptyString(),
@@ -153,10 +153,10 @@ class FirebaseFirestoreRepositoryImpl @Inject constructor(
 
     override fun getEquipmentsHasBeenMaintenance(technicianDocumentId: String): Flow<Resource<List<Equipment>>> = flow<Resource<List<Equipment>>> {
         emit(Resource.Loading)
-        val startDate = Date(2023, 9, 20)
+//        val startDate = Date(2023, 9, 20)
         val maintenanceHistories = firestore.collection("maintenance_history").whereEqualTo("technician_document_id", technicianDocumentId)
 //            .whereLessThan("date", Date(2023, 8, 23))
-            .whereGreaterThan("date", startDate)
+//            .whereGreaterThan("date", startDate)
             .get().await()
         val equipments = maintenanceHistories
             .map {
@@ -166,7 +166,7 @@ class FirebaseFirestoreRepositoryImpl @Inject constructor(
                     maintenanceCheckPoint = it.getString("maintenance_check_point") ?: emptyString(),
                     equipmentType = it.getString("type") ?: emptyString(),
                     equipmentDocumentId = it.getString("equipment_document_id") ?: emptyString(),
-                    date = it.getDate("date") ?: Date(),
+                    date = it.getTimestamp("date") ?: Timestamp.now(),
                     maintenanceCheckPointHistoryDocumentId = it.getString("maintenance_check_point_history_document_id") ?: emptyString(),
                     status = it.getString("status")?.titleCase() ?: emptyString()
                 )
@@ -218,7 +218,7 @@ class FirebaseFirestoreRepositoryImpl @Inject constructor(
                     maintenanceCheckPoint = it.getString("maintenance_check_point") ?: emptyString(),
                     equipmentType = it.getString("type") ?: emptyString(),
                     equipmentDocumentId = it.getString("equipment_document_id") ?: emptyString(),
-                    date = it.getDate("date") ?: Date(),
+                    date = it.getTimestamp("date") ?: Timestamp.now(),
                     maintenanceCheckPointHistoryDocumentId = it.getString("maintenance_check_point_history_document_id") ?: emptyString(),
                     status = it.getString("status")?.titleCase() ?: emptyString()
                 )
@@ -272,7 +272,7 @@ class FirebaseFirestoreRepositoryImpl @Inject constructor(
                     maintenanceCheckPoint = it.getString("maintenance_check_point") ?: emptyString(),
                     equipmentType = it.getString("type") ?: emptyString(),
                     equipmentDocumentId = it.getString("equipment_document_id") ?: emptyString(),
-                    date = it.getDate("date") ?: Date(),
+                    date = it.getTimestamp("date") ?: Timestamp.now(),
                     maintenanceCheckPointHistoryDocumentId = it.getString("maintenance_check_point_history_document_id") ?: emptyString(),
                     status = it.getString("status")?.titleCase() ?: emptyString()
                 )
@@ -319,12 +319,12 @@ class FirebaseFirestoreRepositoryImpl @Inject constructor(
                 maintenanceCheckPoint = it.getString("maintenance_check_point") ?: emptyString(),
                 equipmentDocumentId = it.getString("equipment_document_id") ?: emptyString(),
                 equipmentType = it.getString("type") ?: emptyString(),
-                date = it.getDate("date") ?: Date(),
+                date = it.getTimestamp("date") ?: Timestamp.now(),
                 maintenanceCheckPointHistoryDocumentId = it.getString("maintenance_check_point_history_document_id") ?: emptyString(),
                 employeeDocumentId = it.getString("employee_document_id") ?: emptyString(),
                 status = it.getString("status") ?: emptyString(),
-                plantDuration = it.getDate("plant_duration") ?: Date(),
-                actualDuration = it.getDate("actual_duration") ?: Date()
+                plantDuration = it.getTimestamp("plant_duration") ?: Timestamp.now(),
+                actualDuration = it.getTimestamp("actual_duration") ?: Timestamp.now()
             )
         }
         emit(Resource.Success(maintenanceHistory))
@@ -489,7 +489,7 @@ class FirebaseFirestoreRepositoryImpl @Inject constructor(
             val equipment = Equipment(
                 documentId = it.id,
                 equipment = it.getLong("equipment") ?: 0L,
-                date = it.getDate("date") ?: Date(),
+                date = it.getTimestamp("date") ?: Timestamp.now(),
                 interval = it.getString("interval") ?: emptyString(),
                 execution = it.getString("execution") ?: emptyString(),
                 location = it.getString("location") ?: emptyString(),

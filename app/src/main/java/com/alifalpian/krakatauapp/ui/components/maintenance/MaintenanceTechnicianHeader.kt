@@ -42,8 +42,8 @@ fun MaintenanceTechnicianHeader(
         SuccessMaintenanceTechnicianHeader(
             modifier = modifier,
             technician = technician.data,
-            plantDuration = maintenanceHistory.data.plantDuration,
-            actualDuration = maintenanceHistory.data.actualDuration
+            plantDuration = maintenanceHistory.data.plantDuration.toDate(),
+            actualDuration = maintenanceHistory.data.actualDuration.toDate()
         )
     }
 }

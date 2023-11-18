@@ -1,5 +1,6 @@
 package com.alifalpian.krakatauapp.presentation.technician.maintenance.list
 
+import android.util.Log
 import androidx.compose.foundation.ExperimentalFoundationApi
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
@@ -19,8 +20,10 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.rememberCoroutineScope
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.text.style.TextAlign
@@ -57,7 +60,7 @@ private const val TAG = "ListMaintenanceTechnici"
 fun ListMaintenanceTechnicianScreen(
     modifier: Modifier = Modifier,
     navigator: DestinationsNavigator = EmptyDestinationsNavigator,
-    listMaintenanceTechnicianViewModel: ListMaintenanceTechnicianViewModel = hiltViewModel(),
+    viewModel: ListMaintenanceTechnicianViewModel = hiltViewModel(),
 ) {
     val tabPager = listOf(
         "Semua", "Selesai"
@@ -67,21 +70,16 @@ fun ListMaintenanceTechnicianScreen(
     }
     val scope = rememberCoroutineScope()
 
-    val listMaintenanceTechnicianUiState by listMaintenanceTechnicianViewModel.listMaintenanceTechnicianUiState.collectAsState()
+    val listMaintenanceTechnicianUiState by viewModel.listMaintenanceTechnicianUiState.collectAsState()
     val equipmentsWillMaintenance = listMaintenanceTechnicianUiState.equipmentsWillMaintenance
     val equipmentsHasBeenMaintenance = listMaintenanceTechnicianUiState.equipmentsHasBeenMaintenance
+    val loggedUser = listMaintenanceTechnicianUiState.loggedUser
+    val user = listMaintenanceTechnicianUiState.user
 
     val calendarDialogUseCase = rememberUseCaseState()
     val showCalendar: () -> Unit = { calendarDialogUseCase.show() }
 
-    val technicianDocumentId = remember {
-        "NMafmmi08rDryW2jzMGY"
-    }
-
-    LaunchedEffect(key1 = Unit) {
-        listMaintenanceTechnicianViewModel.getEquipmentsWillBeMaintenance(technicianDocumentId)
-        listMaintenanceTechnicianViewModel.getEquipmentsHasBeenMaintenance(technicianDocumentId)
-    }
+    var technicianDocumentId by remember { mutableStateOf("") }
 
     val onAllMaintenanceEquipmentClicked: (Equipment) -> Unit = {
         navigator.navigate(StartQuestionMaintenanceScreenDestination(
@@ -97,6 +95,46 @@ fun ListMaintenanceTechnicianScreen(
             equipmentDocumentId = it.maintenanceHistoryDocumentId,
             maintenanceHistoryDocumentId = it.maintenanceHistoryDocumentId
         ))
+    }
+
+    LaunchedEffect(key1 = Unit) {
+        viewModel.getLoggedUser()
+    }
+
+    LaunchedEffect(key1 = loggedUser) {
+        if (loggedUser != null) {
+            viewModel.getUser(loggedUser.uid)
+        }
+    }
+
+    LaunchedEffect(key1 = user) {
+        if (user is Resource.Success) {
+            val documentId = user.data.documentId
+            technicianDocumentId = documentId
+            viewModel.getEquipmentsWillBeMaintenance(documentId)
+            viewModel.getEquipmentsHasBeenMaintenance(documentId)
+        }
+    }
+
+    LaunchedEffect(key1 = equipmentsWillMaintenance) {
+        when (equipmentsWillMaintenance) {
+            Resource.Empty -> {}
+            is Resource.Error -> Log.d(
+                TAG,
+                "ListMaintenanceTechnicianScreen: Error = ${equipmentsWillMaintenance.error}"
+            )
+            Resource.Idling -> {}
+            Resource.Loading -> Log.d(
+                TAG,
+                "ListMaintenanceTechnicianScreen: Loading"
+            )
+
+            is Resource.Success -> Log.d(
+                TAG,
+                "ListMaintenanceTechnicianScreen: Success = ${equipmentsWillMaintenance.data}"
+            )
+
+        }
     }
 
     CalendarDialog(

@@ -79,7 +79,7 @@ fun MaintenanceTechnicianItem(
             horizontalAlignment = Alignment.End
         ) {
             Text(
-                text = equipment.date.toMaintenanceDateFormat(),
+                text = equipment.date.toDate().toMaintenanceDateFormat(),
                 lineHeight = 1.67.em,
                 fontSize = 12.sp,
                 fontWeight = FontWeight.Medium,

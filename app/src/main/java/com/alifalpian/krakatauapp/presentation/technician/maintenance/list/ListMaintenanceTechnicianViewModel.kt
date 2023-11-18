@@ -14,7 +14,26 @@ class ListMaintenanceTechnicianViewModel @Inject constructor(
 ) : ViewModel() {
 
     var listMaintenanceTechnicianUiState = MutableStateFlow(ListMaintenanceTechnicianUiState())
-        private set
+
+    fun getLoggedUser() {
+        viewModelScope.launch {
+            homeUseCase.isUserLogged().collect { resource ->
+                listMaintenanceTechnicianUiState.value = listMaintenanceTechnicianUiState.value.copy(
+                    loggedUser = resource
+                )
+            }
+        }
+    }
+
+    fun getUser(uid: String) {
+        viewModelScope.launch {
+            homeUseCase.getUser(uid).collect { resource ->
+                listMaintenanceTechnicianUiState.value = listMaintenanceTechnicianUiState.value.copy(
+                    user = resource
+                )
+            }
+        }
+    }
 
     fun getEquipmentsWillBeMaintenance(technicianDocumentId: String) {
         viewModelScope.launch {

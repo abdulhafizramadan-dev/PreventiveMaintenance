@@ -112,7 +112,7 @@ private fun SuccessMaintenanceHeader(
     ) {
         MaintenanceTechnicianHeaderItem(label = "ORDER", value = equipment.equipment.toString())
         Spacer(modifier = Modifier.height(8.dp))
-        MaintenanceTechnicianHeaderItem(label = "TANGGAL", value = equipment.date.toMaintenanceDateFormat())
+        MaintenanceTechnicianHeaderItem(label = "TANGGAL", value = equipment.date.toDate().toMaintenanceDateFormat())
         Spacer(modifier = Modifier.height(8.dp))
         MaintenanceTechnicianHeaderItem(label = "INTERVAL", value = equipment.interval)
         Spacer(modifier = Modifier.height(8.dp))

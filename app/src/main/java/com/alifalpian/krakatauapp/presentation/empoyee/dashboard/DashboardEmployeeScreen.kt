@@ -1,6 +1,5 @@
 package com.alifalpian.krakatauapp.presentation.empoyee.dashboard
 
-import android.util.Log
 import androidx.compose.foundation.ExperimentalFoundationApi
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
@@ -18,6 +17,9 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.text.style.TextAlign
@@ -32,6 +34,7 @@ import com.alifalpian.krakatauapp.ui.components.krakatau.KrakatauDashboardTopApp
 import com.alifalpian.krakatauapp.ui.components.maintenance.MaintenanceTechnicianItem
 import com.alifalpian.krakatauapp.ui.components.maintenance.ShimmerMaintenanceTechnicianItem
 import com.alifalpian.krakatauapp.ui.theme.PreventiveMaintenanceTheme
+import com.alifalpian.krakatauapp.util.emptyString
 import com.maxkeppeker.sheets.core.models.base.SelectionButton
 import com.maxkeppeker.sheets.core.models.base.rememberUseCaseState
 import com.maxkeppeler.sheets.info.InfoDialog
@@ -57,7 +60,10 @@ fun DashboardEmployeeScreen(
     val equipments = dashboardEmployeeUiState.equipments
     val signOut = dashboardEmployeeUiState.signOut
 
+    val errorDialogUseCase = rememberUseCaseState()
     val logoutDialogUseCase = rememberUseCaseState()
+
+    var errorMessage by remember { mutableStateOf("") }
 
     val navigateToLoginScreen: () -> Unit = {
         navigator.navigate(LoginScreenDestination()) {
@@ -80,13 +86,14 @@ fun DashboardEmployeeScreen(
         }
     }
 
-    LaunchedEffect(key1 = equipments) {
-        when (equipments) {
-            Resource.Empty -> {}
-            is Resource.Error -> Log.d("TAG", "DashboardEmployeeScreen: Error = ${equipments.error}")
-            Resource.Idling -> {}
-            Resource.Loading -> Log.d("TAG", "DashboardEmployeeScreen: Loading")
-            is Resource.Success -> Log.d("TAG", "DashboardEmployeeScreen: Success = ${equipments.data}")
+    LaunchedEffect(key1 = user, key2 = equipments) {
+        if (user is Resource.Error) {
+            errorMessage = user.error ?: emptyString()
+            errorDialogUseCase.show()
+        }
+        if (equipments is Resource.Error) {
+            errorMessage = equipments.error ?: emptyString()
+            errorDialogUseCase.show()
         }
     }
 
@@ -109,6 +116,17 @@ fun DashboardEmployeeScreen(
             onNegativeClick = logoutDialogUseCase::finish
         ),
         body = InfoBody.Default(bodyText = "Apakah kamu yakin keluar dari aplikasi?")
+    )
+
+    InfoDialog(
+        state = logoutDialogUseCase,
+        selection = InfoSelection(
+            positiveButton = SelectionButton(
+                text = "Oke"
+            ),
+            onPositiveClick = logoutDialogUseCase::finish,
+        ),
+        body = InfoBody.Default(bodyText = errorMessage)
     )
 
     Scaffold(
